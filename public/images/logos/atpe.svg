@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="atpe-g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513"/>
+      <stop offset="100%" style="stop-color:#6B3410"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="20" fill="white"/>
+  <rect x="2" y="2" width="116" height="116" rx="18" fill="none" stroke="url(#atpe-g)" stroke-width="2"/>
+  <!-- Journal/Presse -->
+  <g transform="translate(60,48)">
+    <!-- Page principale -->
+    <rect x="-25" y="-25" width="50" height="55" rx="3" fill="white" stroke="url(#atpe-g)" stroke-width="2"/>
+    <!-- En-tête -->
+    <rect x="-22" y="-22" width="44" height="8" rx="1" fill="url(#atpe-g)" opacity="0.15"/>
+    <line x1="-18" y1="-18" x2="18" y2="-18" stroke="url(#atpe-g)" stroke-width="1.5"/>
+    <!-- Colonnes de texte -->
+    <g stroke="url(#atpe-g)" stroke-width="0.7" opacity="0.3">
+      <line x1="-20" y1="-9" x2="-3" y2="-9"/>
+      <line x1="-20" y1="-5" x2="-3" y2="-5"/>
+      <line x1="-20" y1="-1" x2="-3" y2="-1"/>
+      <line x1="-20" y1="3" x2="-3" y2="3"/>
+      <line x1="-20" y1="7" x2="-3" y2="7"/>
+      <line x1="3" y1="-9" x2="20" y2="-9"/>
+      <line x1="3" y1="-5" x2="20" y2="-5"/>
+      <line x1="3" y1="-1" x2="20" y2="-1"/>
+      <line x1="3" y1="3" x2="20" y2="3"/>
+      <line x1="3" y1="7" x2="20" y2="7"/>
+    </g>
+    <!-- Image dans journal -->
+    <rect x="3" y="12" width="17" height="12" rx="1" fill="url(#atpe-g)" opacity="0.1" stroke="url(#atpe-g)" stroke-width="0.5"/>
+    <g stroke="url(#atpe-g)" stroke-width="0.7" opacity="0.3">
+      <line x1="-20" y1="14" x2="-3" y2="14"/>
+      <line x1="-20" y1="18" x2="-3" y2="18"/>
+      <line x1="-20" y1="22" x2="-3" y2="22"/>
+    </g>
+    <!-- Plume/stylo -->
+    <g transform="translate(22,-22) rotate(30)">
+      <path d="M0,0 L3,15 L0,12 L-3,15 Z" fill="#C60C30" opacity="0.7"/>
+      <line x1="0" y1="12" x2="0" y2="22" stroke="url(#atpe-g)" stroke-width="1"/>
+    </g>
+  </g>
+  <!-- Texte -->
+  <text x="60" y="98" text-anchor="middle" font-family="'Poppins',sans-serif" font-size="14" font-weight="700" fill="#8B4513">ATPE</text>
+  <text x="60" y="110" text-anchor="middle" font-family="sans-serif" font-size="4.5" fill="#888">AGENCE TCHADIENNE DE</text>
+  <text x="60" y="116" text-anchor="middle" font-family="sans-serif" font-size="4.5" fill="#888">PRESSE ET D'ÉDITION</text>
+</svg>

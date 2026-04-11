@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, Calendar, User, Tag, Share2 } from 'lucide-react';
 import { FacebookIcon, TwitterIcon, LinkedinIcon } from '@/components/SocialIcons';
 import AnimatedSection from '@/components/AnimatedSection';
@@ -42,12 +43,15 @@ export default function ArticlePage() {
   return (
     <>
       {/* Banniere article */}
-      <section className="hero-gradient py-16 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1.5'/%3E%3C/g%3E%3C/svg%3E")`,
-          }}
+      <section className="relative py-16 overflow-hidden">
+        {/* Image de fond */}
+        <Image
+          src={actualite.image}
+          alt={actualite.titre}
+          fill
+          className="object-cover"
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-bleu-dark/80 via-bleu-dark/70 to-bleu-dark/90" />
         <div className="max-w-4xl mx-auto px-4 relative z-10">
           <AnimatedSection>
             <Link

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <rect width="600" height="400" fill="#1a1a2e"/>
+  <!-- Table de conférence -->
+  <g transform="translate(300,250)">
+    <ellipse cx="0" cy="0" rx="180" ry="50" fill="#002664" opacity="0.3" stroke="#FECB00" stroke-width="1"/>
+    <!-- Documents sur la table -->
+    <rect x="-30" y="-15" width="20" height="28" rx="2" fill="white" opacity="0.15" transform="rotate(-5)"/>
+    <rect x="10" y="-12" width="20" height="28" rx="2" fill="white" opacity="0.1" transform="rotate(5)"/>
+  </g>
+  <!-- Armoiries -->
+  <g transform="translate(300,80)">
+    <circle cx="0" cy="0" r="40" fill="#002664" opacity="0.5" stroke="#FECB00" stroke-width="2"/>
+    <path d="M-15,-10 L-8,0 L0,-10 L8,0 L15,-10" stroke="#FECB00" stroke-width="2" fill="none"/>
+    <circle cx="0" cy="-22" r="6" fill="#C60C30"/>
+  </g>
+  <!-- Bannière officielle -->
+  <rect x="150" y="140" width="300" height="40" fill="#C60C30" opacity="0.8" rx="3"/>
+  <text x="300" y="165" text-anchor="middle" font-family="'Poppins',sans-serif" font-size="14" font-weight="700" fill="white">COMMUNIQUÉ OFFICIEL</text>
+  <text x="300" y="340" text-anchor="middle" font-family="'Poppins',sans-serif" font-size="20" font-weight="700" fill="white">CONSEIL DES MINISTRES</text>
+  <text x="300" y="365" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#FECB00">Plan Stratégique TIC 2026-2030</text>
+  <!-- Bande tricolore -->
+  <rect x="0" y="395" width="200" height="5" fill="#002664"/>
+  <rect x="200" y="395" width="200" height="5" fill="#FECB00"/>
+  <rect x="400" y="395" width="200" height="5" fill="#C60C30"/>
+</svg>

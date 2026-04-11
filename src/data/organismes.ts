@@ -6,6 +6,7 @@ export interface Organisme {
   missions: string[];
   couleur: string;
   icon: string;
+  logo: string;
   siteWeb?: string;
 }
 
@@ -24,6 +25,7 @@ export const organismes: Organisme[] = [
     ],
     couleur: '#002664',
     icon: 'Monitor',
+    logo: '/images/logos/adetic.svg',
   },
   {
     id: 'arcep',
@@ -39,6 +41,7 @@ export const organismes: Organisme[] = [
     ],
     couleur: '#C60C30',
     icon: 'Shield',
+    logo: '/images/logos/arcep.svg',
   },
   {
     id: 'la-poste',
@@ -54,6 +57,7 @@ export const organismes: Organisme[] = [
     ],
     couleur: '#FECB00',
     icon: 'Mail',
+    logo: '/images/logos/la-poste.svg',
   },
   {
     id: 'enastic',
@@ -69,6 +73,7 @@ export const organismes: Organisme[] = [
     ],
     couleur: '#003a94',
     icon: 'GraduationCap',
+    logo: '/images/logos/enastic.svg',
   },
   {
     id: 'patn',
@@ -84,6 +89,7 @@ export const organismes: Organisme[] = [
     ],
     couleur: '#0066CC',
     icon: 'Globe',
+    logo: '/images/logos/patn.svg',
   },
   {
     id: 'safitel',
@@ -99,6 +105,7 @@ export const organismes: Organisme[] = [
     ],
     couleur: '#1a8a3f',
     icon: 'Cable',
+    logo: '/images/logos/safitel.svg',
   },
   {
     id: 'atpe',
@@ -114,5 +121,6 @@ export const organismes: Organisme[] = [
     ],
     couleur: '#8B4513',
     icon: 'Newspaper',
+    logo: '/images/logos/atpe.svg',
   },
 ];

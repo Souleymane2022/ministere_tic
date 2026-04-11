@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="enastic-g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#003a94"/>
+      <stop offset="100%" style="stop-color:#0055cc"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="20" fill="white"/>
+  <rect x="2" y="2" width="116" height="116" rx="18" fill="none" stroke="url(#enastic-g)" stroke-width="2"/>
+  <!-- Chapeau de diplômé -->
+  <polygon points="60,28 90,42 60,52 30,42" fill="url(#enastic-g)"/>
+  <line x1="60" y1="52" x2="60" y2="42" stroke="#002664" stroke-width="2"/>
+  <rect x="58" y="42" width="4" height="12" fill="#002664"/>
+  <path d="M30,42 L30,55 Q45,68 60,55" fill="none" stroke="#002664" stroke-width="1.5"/>
+  <!-- Livre ouvert -->
+  <g transform="translate(60,72)">
+    <path d="M0,0 L-22,-5 L-22,15 L0,20 Z" fill="#002664" opacity="0.15"/>
+    <path d="M0,0 L22,-5 L22,15 L0,20 Z" fill="url(#enastic-g)" opacity="0.15"/>
+    <path d="M-22,-5 L0,0 L22,-5" fill="none" stroke="url(#enastic-g)" stroke-width="1.5"/>
+    <path d="M-22,15 L0,20 L22,15" fill="none" stroke="url(#enastic-g)" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="0" y2="20" stroke="url(#enastic-g)" stroke-width="1"/>
+    <!-- Lignes de texte -->
+    <g stroke="#003a94" stroke-width="0.7" opacity="0.4">
+      <line x1="-18" y1="2" x2="-4" y2="5"/>
+      <line x1="-17" y1="6" x2="-5" y2="9"/>
+      <line x1="-16" y1="10" x2="-5" y2="13"/>
+      <line x1="4" y1="5" x2="18" y2="2"/>
+      <line x1="5" y1="9" x2="17" y2="6"/>
+      <line x1="5" y1="13" x2="16" y2="10"/>
+    </g>
+  </g>
+  <!-- Circuits numériques -->
+  <g stroke="#FECB00" stroke-width="1" opacity="0.6">
+    <circle cx="92" cy="32" r="2" fill="#FECB00"/>
+    <line x1="92" y1="34" x2="92" y2="42"/>
+    <circle cx="28" cy="32" r="2" fill="#FECB00"/>
+    <line x1="28" y1="34" x2="28" y2="42"/>
+  </g>
+  <!-- Texte -->
+  <text x="60" y="104" text-anchor="middle" font-family="'Poppins',sans-serif" font-size="12" font-weight="700" fill="#003a94">ENASTIC</text>
+  <text x="60" y="114" text-anchor="middle" font-family="sans-serif" font-size="4.5" fill="#888">ÉCOLE NATIONALE SUP. DES TIC</text>
+</svg>

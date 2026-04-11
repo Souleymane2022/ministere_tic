@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Calendar, ArrowRight, Tag } from 'lucide-react';
+import Image from 'next/image';
+import { Calendar, ArrowRight } from 'lucide-react';
 import { Actualite, categories } from '@/data/actualites';
 
 interface NewsCardProps {
@@ -24,16 +25,16 @@ export default function NewsCard({ actualite, variante = 'default' }: NewsCardPr
   if (variante === 'featured') {
     return (
       <Link href={`/actualites/${actualite.slug}`} className="block group">
-        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-bleu to-bleu-dark min-h-[400px] flex items-end card-hover">
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-bleu-dark/95 via-bleu-dark/50 to-transparent" />
-
-          {/* Pattern */}
-          <div className="absolute inset-0 opacity-5"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1.5'/%3E%3C/g%3E%3C/svg%3E")`,
-            }}
+        <div className="relative rounded-2xl overflow-hidden min-h-[400px] flex items-end card-hover">
+          {/* Image de fond */}
+          <Image
+            src={actualite.image}
+            alt={actualite.titre}
+            fill
+            className="object-cover"
           />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-bleu-dark/95 via-bleu-dark/60 to-bleu-dark/20" />
 
           <div className="relative z-10 p-8">
             <div className="flex items-center gap-3 mb-4">
@@ -65,9 +66,14 @@ export default function NewsCard({ actualite, variante = 'default' }: NewsCardPr
     return (
       <Link href={`/actualites/${actualite.slug}`} className="block group">
         <div className="flex gap-5 bg-white rounded-xl p-4 card-hover border border-gris-100">
-          {/* Image placeholder */}
-          <div className="w-32 h-24 shrink-0 rounded-lg bg-gradient-to-br from-bleu/10 to-bleu/5 flex items-center justify-center">
-            <Tag size={24} className="text-bleu/30" />
+          {/* Image */}
+          <div className="w-32 h-24 shrink-0 rounded-lg overflow-hidden relative">
+            <Image
+              src={actualite.image}
+              alt={actualite.titre}
+              fill
+              className="object-cover"
+            />
           </div>
           <div className="flex-1 min-w-0">
             <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-semibold text-white ${categorie.color} mb-2`}>
@@ -90,15 +96,15 @@ export default function NewsCard({ actualite, variante = 'default' }: NewsCardPr
   return (
     <Link href={`/actualites/${actualite.slug}`} className="block group">
       <div className="bg-white rounded-2xl overflow-hidden card-hover border border-gris-100 h-full flex flex-col">
-        {/* Image placeholder */}
-        <div className="relative h-48 bg-gradient-to-br from-bleu/10 via-bleu/5 to-jaune/5 flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-bleu/5 to-transparent" />
-          <div className="relative text-center p-4">
-            <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-bleu/10 flex items-center justify-center">
-              <Tag size={20} className="text-bleu/40" />
-            </div>
-            <span className="text-bleu/30 text-xs font-medium">{categorie.label}</span>
-          </div>
+        {/* Image */}
+        <div className="relative h-48 overflow-hidden">
+          <Image
+            src={actualite.image}
+            alt={actualite.titre}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
           {/* Badge categorie */}
           <div className="absolute top-3 left-3">
             <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${categorie.color} shadow-md`}>

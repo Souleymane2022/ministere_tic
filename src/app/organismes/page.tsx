@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import AnimatedSection from '@/components/AnimatedSection';
 import OrganismeCard from '@/components/OrganismeCard';
 import { organismes } from '@/data/organismes';
@@ -66,11 +67,14 @@ export default function OrganismesPage() {
                   <div className="p-8">
                     <div className="flex flex-col md:flex-row md:items-start gap-6">
                       <div className="shrink-0">
-                        <div
-                          className="w-20 h-20 rounded-2xl flex items-center justify-center text-white font-bold text-xl"
-                          style={{ backgroundColor: org.couleur }}
-                        >
-                          {org.sigle.substring(0, 3)}
+                        <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gris-50 flex items-center justify-center p-2">
+                          <Image
+                            src={org.logo}
+                            alt={`Logo ${org.sigle}`}
+                            width={72}
+                            height={72}
+                            className="object-contain"
+                          />
                         </div>
                       </div>
                       <div className="flex-1">

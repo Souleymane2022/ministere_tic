@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Phone, Mail, MapPin, ArrowUp, Globe } from 'lucide-react';
 import { FacebookIcon, TwitterIcon, LinkedinIcon, YoutubeIcon } from './SocialIcons';
 
@@ -46,8 +47,14 @@ export default function Footer() {
           {/* A propos */}
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-jaune flex items-center justify-center">
-                <span className="text-bleu font-bold text-sm">TD</span>
+              <div className="w-12 h-12 shrink-0">
+                <Image
+                  src="/images/logos/armoiries-tchad.svg"
+                  alt="Armoiries du Tchad"
+                  width={48}
+                  height={48}
+                  className="object-contain brightness-0 invert opacity-80"
+                />
               </div>
               <div>
                 <div className="font-bold text-lg">MTENDA</div>

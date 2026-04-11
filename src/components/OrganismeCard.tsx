@@ -1,42 +1,25 @@
 'use client';
 
-import {
-  Monitor,
-  Shield,
-  Mail,
-  GraduationCap,
-  Globe,
-  Cable,
-  Newspaper,
-} from 'lucide-react';
+import Image from 'next/image';
 import { Organisme } from '@/data/organismes';
-
-const iconMap: Record<string, React.ElementType> = {
-  Monitor,
-  Shield,
-  Mail,
-  GraduationCap,
-  Globe,
-  Cable,
-  Newspaper,
-};
 
 interface OrganismeCardProps {
   organisme: Organisme;
 }
 
 export default function OrganismeCard({ organisme }: OrganismeCardProps) {
-  const Icon = iconMap[organisme.icon] || Globe;
-
   return (
     <div className="group bg-white rounded-2xl p-6 card-hover border border-gris-100 h-full flex flex-col shine-effect">
-      {/* Icon & Sigle */}
+      {/* Logo & Sigle */}
       <div className="flex items-start gap-4 mb-4">
-        <div
-          className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110 duration-300"
-          style={{ backgroundColor: `${organisme.couleur}15` }}
-        >
-          <Icon size={26} style={{ color: organisme.couleur }} />
+        <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 transition-transform group-hover:scale-110 duration-300 bg-gris-50 flex items-center justify-center p-1">
+          <Image
+            src={organisme.logo}
+            alt={`Logo ${organisme.sigle}`}
+            width={56}
+            height={56}
+            className="object-contain"
+          />
         </div>
         <div>
           <h3 className="font-bold text-xl text-gris-800 group-hover:text-bleu transition-colors">

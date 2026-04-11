@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="saf-g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a8a3f"/>
+      <stop offset="100%" style="stop-color:#0d6b2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="20" fill="white"/>
+  <rect x="2" y="2" width="116" height="116" rx="18" fill="none" stroke="url(#saf-g)" stroke-width="2"/>
+  <!-- Fibre optique -->
+  <g transform="translate(60,50)">
+    <!-- Câble central -->
+    <path d="M-35,0 Q-15,-20 0,0 Q15,20 35,0" stroke="url(#saf-g)" stroke-width="3" fill="none"/>
+    <path d="M-35,0 Q-15,20 0,0 Q15,-20 35,0" stroke="#FECB00" stroke-width="2" fill="none" opacity="0.6"/>
+    <!-- Points lumineux (signal fibre) -->
+    <circle cx="-30" cy="3" r="4" fill="url(#saf-g)"/>
+    <circle cx="-15" cy="-10" r="3.5" fill="#FECB00"/>
+    <circle cx="0" cy="0" r="5" fill="url(#saf-g)">
+      <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="15" cy="10" r="3.5" fill="#FECB00"/>
+    <circle cx="30" cy="-3" r="4" fill="url(#saf-g)"/>
+    <!-- Rayons de lumière -->
+    <g stroke="#FECB00" stroke-width="0.5" opacity="0.3">
+      <line x1="0" y1="-15" x2="0" y2="-25"/>
+      <line x1="-8" y1="-12" x2="-15" y2="-20"/>
+      <line x1="8" y1="-12" x2="15" y2="-20"/>
+    </g>
+  </g>
+  <!-- Globe Afrique -->
+  <circle cx="60" cy="30" r="12" fill="none" stroke="url(#saf-g)" stroke-width="1.5" opacity="0.4"/>
+  <path d="M55,20 Q58,25 56,30 Q54,35 58,40" fill="none" stroke="url(#saf-g)" stroke-width="1" opacity="0.3"/>
+  <line x1="48" y1="30" x2="72" y2="30" stroke="url(#saf-g)" stroke-width="0.7" opacity="0.3"/>
+  <!-- Texte -->
+  <text x="60" y="82" text-anchor="middle" font-family="'Poppins',sans-serif" font-size="13" font-weight="700" fill="#1a8a3f">SAFITEL</text>
+  <text x="60" y="94" text-anchor="middle" font-family="sans-serif" font-size="4.5" fill="#888">SOCIÉTÉ AFRICAINE DE FIBRE</text>
+  <text x="60" y="100" text-anchor="middle" font-family="sans-serif" font-size="4.5" fill="#888">ET DE TÉLÉCOMMUNICATIONS</text>
+</svg>

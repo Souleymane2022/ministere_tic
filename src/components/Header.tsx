@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Menu,
@@ -95,11 +96,14 @@ export default function Header() {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-jaune to-jaune-dark flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
-                  <span className="text-bleu font-bold text-lg leading-none">TD</span>
-                </div>
-                <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-rouge rounded-full border-2 border-white" />
+              <div className="relative w-14 h-14 shrink-0">
+                <Image
+                  src="/images/logos/armoiries-tchad.svg"
+                  alt="Armoiries du Tchad"
+                  width={56}
+                  height={56}
+                  className="object-contain group-hover:scale-105 transition-transform"
+                />
               </div>
               <div className="hidden sm:block">
                 <div className="font-bold text-bleu text-base leading-tight">MTENDA</div>

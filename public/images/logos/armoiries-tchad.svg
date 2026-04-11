@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 440" width="400" height="440">
+  <!-- Armoiries du Tchad - Version stylisée -->
+  <defs>
+    <linearGradient id="shield-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#002664"/>
+      <stop offset="100%" style="stop-color:#001a47"/>
+    </linearGradient>
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FECB00"/>
+      <stop offset="100%" style="stop-color:#D4A900"/>
+    </linearGradient>
+    <linearGradient id="sun-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#C60C30"/>
+      <stop offset="100%" style="stop-color:#FECB00"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Soleil levant -->
+  <g transform="translate(200, 100)">
+    <!-- Rayons -->
+    <g fill="url(#sun-grad)" opacity="0.9">
+      <polygon points="0,-65 -8,-30 8,-30"/>
+      <polygon points="0,-65 -8,-30 8,-30" transform="rotate(20)"/>
+      <polygon points="0,-65 -8,-30 8,-30" transform="rotate(40)"/>
+      <polygon points="0,-65 -8,-30 8,-30" transform="rotate(60)"/>
+      <polygon points="0,-65 -8,-30 8,-30" transform="rotate(80)"/>
+      <polygon points="0,-65 -8,-30 8,-30" transform="rotate(-20)"/>
+      <polygon points="0,-65 -8,-30 8,-30" transform="rotate(-40)"/>
+      <polygon points="0,-65 -8,-30 8,-30" transform="rotate(-60)"/>
+      <polygon points="0,-65 -8,-30 8,-30" transform="rotate(-80)"/>
+    </g>
+    <!-- Demi-cercle soleil -->
+    <path d="M-40,0 A40,40 0 0,1 40,0" fill="#C60C30"/>
+  </g>
+
+  <!-- Bouclier (barry dancetty) -->
+  <g transform="translate(200, 210)">
+    <path d="M-70,-80 L70,-80 L55,60 Q0,100 -55,60 Z" fill="url(#shield-grad)" stroke="url(#gold-grad)" stroke-width="3"/>
+    <!-- Zigzag pattern -->
+    <g fill="url(#gold-grad)">
+      <path d="M-60,-65 L-40,-45 L-20,-65 L0,-45 L20,-65 L40,-45 L60,-65 L60,-45 L40,-25 L20,-45 L0,-25 L-20,-45 L-40,-25 L-60,-45 Z"/>
+      <path d="M-55,-25 L-35,-5 L-15,-25 L5,-5 L25,-25 L45,-5 L55,-15 L55,5 L45,15 L25,5 L5,15 L-15,5 L-35,15 L-55,5 Z"/>
+      <path d="M-50,15 L-30,35 L-10,15 L10,35 L30,15 L45,25 L40,45 Q0,75 -40,45 L-45,25 Z"/>
+    </g>
+  </g>
+
+  <!-- Chèvre (gauche) -->
+  <g transform="translate(95, 200)" fill="url(#gold-grad)">
+    <ellipse cx="0" cy="0" rx="25" ry="35"/>
+    <circle cx="-5" cy="-35" r="14"/>
+    <!-- Cornes -->
+    <path d="M-15,-45 Q-25,-80 -10,-90" stroke="url(#gold-grad)" stroke-width="4" fill="none"/>
+    <path d="M-5,-48 Q5,-85 -5,-95" stroke="url(#gold-grad)" stroke-width="4" fill="none"/>
+    <!-- Pattes -->
+    <rect x="-15" y="30" width="6" height="30" rx="2"/>
+    <rect x="8" y="30" width="6" height="30" rx="2"/>
+  </g>
+
+  <!-- Lion (droite) -->
+  <g transform="translate(305, 200)" fill="url(#gold-grad)">
+    <ellipse cx="0" cy="0" rx="28" ry="35"/>
+    <circle cx="10" cy="-30" r="18"/>
+    <!-- Crinière -->
+    <circle cx="10" cy="-30" r="24" fill="none" stroke="url(#gold-grad)" stroke-width="3" opacity="0.5"/>
+    <!-- Pattes -->
+    <rect x="-12" y="30" width="7" height="30" rx="2"/>
+    <rect x="8" y="30" width="7" height="30" rx="2"/>
+    <!-- Queue -->
+    <path d="M-25,0 Q-45,-20 -35,-40" stroke="url(#gold-grad)" stroke-width="4" fill="none"/>
+  </g>
+
+  <!-- Médaille/Ordre -->
+  <g transform="translate(200, 320)">
+    <circle cx="0" cy="0" r="18" fill="#C60C30" stroke="url(#gold-grad)" stroke-width="2"/>
+    <polygon points="0,-12 3,-4 12,-4 5,2 7,10 0,6 -7,10 -5,2 -12,-4 -3,-4" fill="url(#gold-grad)"/>
+  </g>
+
+  <!-- Bandeau devise -->
+  <g transform="translate(200, 370)">
+    <path d="M-120,0 Q-100,-15 -60,-5 L60,-5 Q100,-15 120,0 Q100,15 60,5 L-60,5 Q-100,15 -120,0 Z" fill="#C60C30"/>
+    <text x="0" y="5" text-anchor="middle" fill="white" font-family="serif" font-size="12" font-weight="bold">UNITÉ • TRAVAIL • PROGRÈS</text>
+  </g>
+
+  <!-- Flèches rouges -->
+  <polygon points="120,145 125,165 115,165" fill="#C60C30"/>
+  <polygon points="280,145 285,165 275,165" fill="#C60C30"/>
+</svg>
