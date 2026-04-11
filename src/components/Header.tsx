@@ -98,7 +98,7 @@ export default function Header() {
             <Link href="/" className="flex items-center gap-3 group">
               <div className="relative w-14 h-14 shrink-0">
                 <Image
-                  src="/images/logos/armoiries-tchad.svg"
+                  src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Coat_of_arms_of_Chad.svg"
                   alt="Armoiries du Tchad"
                   width={56}
                   height={56}

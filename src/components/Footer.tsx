@@ -49,7 +49,7 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 shrink-0">
                 <Image
-                  src="/images/logos/armoiries-tchad.svg"
+                  src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Coat_of_arms_of_Chad.svg"
                   alt="Armoiries du Tchad"
                   width={48}
                   height={48}

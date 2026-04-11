@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Target, Eye, Award, Users, Building, BookOpen } from 'lucide-react';
 import AnimatedSection from '@/components/AnimatedSection';
 import { ministere } from '@/data/ministere';
@@ -136,19 +137,21 @@ export default function AProposPage() {
           {/* Equipe dirigeante */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {[
-              { ...ministere.ministre, role: 'Ministre' },
-              { nom: ministere.secretaireGeneral.nom, titre: ministere.secretaireGeneral.titre, role: 'Secretaire General' },
-              { nom: ministere.secretaireGeneralAdjoint.nom, titre: ministere.secretaireGeneralAdjoint.titre, role: 'SGA' },
-              { nom: ministere.inspecteurGeneral.nom, titre: ministere.inspecteurGeneral.titre, role: 'Inspecteur General' },
+              { ...ministere.ministre, role: 'Ministre', photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop&q=80' },
+              { nom: ministere.secretaireGeneral.nom, titre: ministere.secretaireGeneral.titre, role: 'Secretaire General', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80' },
+              { nom: ministere.secretaireGeneralAdjoint.nom, titre: ministere.secretaireGeneralAdjoint.titre, role: 'SGA', photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=80' },
+              { nom: ministere.inspecteurGeneral.nom, titre: ministere.inspecteurGeneral.titre, role: 'Inspecteur General', photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80' },
             ].map((personne, index) => (
               <AnimatedSection key={personne.nom} delay={index * 0.1}>
                 <div className="bg-white rounded-2xl overflow-hidden card-hover border border-gris-100 text-center">
-                  <div className="h-40 bg-gradient-to-br from-bleu to-bleu-dark flex items-center justify-center">
-                    <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center">
-                      <span className="text-2xl text-white/60 font-bold">
-                        {personne.nom.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                      </span>
-                    </div>
+                  <div className="h-40 relative">
+                    <Image
+                      src={personne.photo}
+                      alt={personne.nom}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-bleu-dark/40 to-transparent" />
                   </div>
                   <div className="p-5">
                     <span className="inline-block px-3 py-1 bg-jaune/10 text-jaune-dark text-xs font-semibold rounded-full mb-2">

@@ -44,7 +44,7 @@ Formation de 50 000 jeunes Tchadiens aux metiers du numerique, en partenariat av
 Creation d'un ecosysteme favorable a l'innovation et a l'entrepreneuriat numerique, avec la mise en place d'incubateurs et de fonds d'investissement dedies.
 
 Le Ministre a souligne que "ce programme est une priorite nationale qui permettra au Tchad de prendre sa place dans l'economie numerique mondiale".`,
-    image: '/images/actualites/tchad-numerique.svg',
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80',
     categorie: 'numerique',
     date: '2026-04-08',
     auteur: 'Direction de la Communication',
@@ -61,7 +61,7 @@ Le Ministre a souligne que "ce programme est une priorite nationale qui permettr
 Les travaux, qui ont dure 18 mois, ont permis de poser plus de 2 000 kilometres de cables en fibre optique a travers la capitale. Cette infrastructure moderne garantit des debits allant jusqu'a 100 Mbps pour les particuliers et 1 Gbps pour les entreprises.
 
 Le projet s'inscrit dans la strategie nationale de connectivite et vise a positionner N'Djamena comme un hub numerique regional.`,
-    image: '/images/actualites/fibre-optique.svg',
+    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&auto=format&fit=crop&q=80',
     categorie: 'telecommunications',
     date: '2026-04-05',
     auteur: 'SAFITEL',
@@ -83,7 +83,7 @@ Les formations proposees couvrent un large spectre de competences :
 - Marketing digital
 
 Le programme beneficie du soutien financier de partenaires internationaux et offre des bourses d'etudes a hauteur de 60% des effectifs.`,
-    image: '/images/actualites/formation.svg',
+    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80',
     categorie: 'formation',
     date: '2026-04-02',
     auteur: 'ENASTIC',
@@ -103,7 +103,7 @@ Le programme beneficie du soutien financier de partenaires internationaux et off
 - Simplification des procedures d'attribution des licences
 
 Cette reforme s'inscrit dans la volonte du gouvernement de creer un environnement competitif et favorable aux investissements dans le secteur des telecoms.`,
-    image: '/images/actualites/regulation.svg',
+    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop&q=80',
     categorie: 'telecommunications',
     date: '2026-03-28',
     auteur: 'ARCEP',
@@ -123,7 +123,7 @@ Cette reforme s'inscrit dans la volonte du gouvernement de creer un environnemen
 - La creation d'un centre regional d'excellence en technologies emergentes
 
 Ce partenariat strategique positionne le Tchad comme un acteur majeur de la transformation numerique en Afrique centrale.`,
-    image: '/images/actualites/cooperation.svg',
+    image: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800&auto=format&fit=crop&q=80',
     categorie: 'international',
     date: '2026-03-22',
     auteur: 'Direction de la Communication',
@@ -144,7 +144,7 @@ Cette plateforme permet desormais aux citoyens de :
 - Prendre rendez-vous dans les services d'etat civil
 
 La plateforme, developpee par l'ADETIC, est accessible via un site web et une application mobile, et sera deployee progressivement dans les 23 provinces du Tchad.`,
-    image: '/images/actualites/e-gouvernance.svg',
+    image: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&auto=format&fit=crop&q=80',
     categorie: 'gouvernance',
     date: '2026-03-18',
     auteur: 'ADETIC',
@@ -165,7 +165,7 @@ Cette modernisation comprend :
 - Une application mobile pour les clients
 
 Cette initiative vise a repositionner La Poste comme un acteur cle de la logistique numerique au Tchad.`,
-    image: '/images/actualites/poste-moderne.svg',
+    image: 'https://images.unsplash.com/photo-1526554850534-7c78330d5f90?w=800&auto=format&fit=crop&q=80',
     categorie: 'numerique',
     date: '2026-03-12',
     auteur: 'La Poste du Tchad',
@@ -186,7 +186,7 @@ Ce plan prevoit un investissement total de 500 milliards de FCFA sur cinq ans, r
 - Innovation et ecosysteme entrepreneurial (15%)
 
 Le Conseil des Ministres a souligne l'importance strategique de ce plan pour le developpement economique et social du Tchad.`,
-    image: '/images/actualites/conseil-ministres.svg',
+    image: 'https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=800&auto=format&fit=crop&q=80',
     categorie: 'officiel',
     date: '2026-03-08',
     auteur: 'Secretariat General du Gouvernement',

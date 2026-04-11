@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Quote, ChevronRight } from 'lucide-react';
 import Hero from '@/components/Hero';
 import Marquee from '@/components/Marquee';
@@ -38,16 +39,14 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <AnimatedSection direction="left">
               <div className="relative">
-                <div className="w-full aspect-[4/5] max-w-md bg-gradient-to-br from-bleu to-bleu-dark rounded-2xl overflow-hidden relative shadow-2xl mx-auto lg:mx-0">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-32 h-32 mx-auto rounded-full bg-white/10 flex items-center justify-center mb-4">
-                        <span className="text-5xl text-white/40">HM</span>
-                      </div>
-                      <p className="text-white/60 text-sm">Photo Officielle</p>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-bleu-dark to-transparent p-6">
+                <div className="w-full aspect-[4/5] max-w-md rounded-2xl overflow-hidden relative shadow-2xl mx-auto lg:mx-0">
+                  <Image
+                    src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&auto=format&fit=crop&q=80"
+                    alt={ministere.ministre.nom}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-bleu-dark via-bleu-dark/70 to-transparent p-6">
                     <h3 className="text-white font-bold text-lg">{ministere.ministre.nom}</h3>
                     <p className="text-white/70 text-sm">Ministre des Telecommunications</p>
                   </div>

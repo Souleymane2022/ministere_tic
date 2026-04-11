@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, Award, Briefcase, GraduationCap, Target } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowLeft, Briefcase, Target } from 'lucide-react';
 import AnimatedSection from '@/components/AnimatedSection';
 import { ministere } from '@/data/ministere';
 
@@ -47,14 +48,14 @@ export default function MinistrePage() {
             {/* Photo et info */}
             <AnimatedSection direction="left">
               <div className="sticky top-24">
-                <div className="bg-gradient-to-br from-bleu to-bleu-dark rounded-2xl overflow-hidden shadow-2xl">
-                  <div className="aspect-[3/4] flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-36 h-36 mx-auto rounded-full bg-white/10 flex items-center justify-center mb-4">
-                        <span className="text-6xl text-white/30 font-bold">HM</span>
-                      </div>
-                      <p className="text-white/50 text-sm">Photo Officielle</p>
-                    </div>
+                <div className="rounded-2xl overflow-hidden shadow-2xl">
+                  <div className="aspect-[3/4] relative">
+                    <Image
+                      src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&auto=format&fit=crop&q=80"
+                      alt={ministere.ministre.nom}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                   <div className="p-6 bg-bleu-dark/50">
                     <h3 className="text-white font-bold text-lg">{ministere.ministre.nom}</h3>
