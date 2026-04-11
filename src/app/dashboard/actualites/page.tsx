@@ -10,10 +10,9 @@ import {
   Trash2,
   Star,
   Calendar,
-  Filter,
-  MoreVertical,
   Eye,
   Newspaper,
+  User,
 } from 'lucide-react';
 import { useAdmin } from '@/lib/admin-store';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -23,7 +22,6 @@ export default function ActualitesAdmin() {
   const { actualites, supprimerActualite, modifierActualite } = useAdmin();
   const [recherche, setRecherche] = useState('');
   const [filtre, setFiltre] = useState('tous');
-  const [menuOuvert, setMenuOuvert] = useState<string | null>(null);
 
   const filtrees = actualites.filter((a) => {
     const matchRecherche = a.titre.toLowerCase().includes(recherche.toLowerCase());
@@ -32,15 +30,9 @@ export default function ActualitesAdmin() {
   });
 
   const handleSupprimer = (id: string) => {
-    if (confirm('Etes-vous sur de vouloir supprimer cet article ?')) {
+    if (confirm('Supprimer cet article ?')) {
       supprimerActualite(id);
     }
-    setMenuOuvert(null);
-  };
-
-  const toggleVedette = (id: string, current: boolean) => {
-    modifierActualite(id, { vedette: !current });
-    setMenuOuvert(null);
   };
 
   return (
@@ -48,161 +40,180 @@ export default function ActualitesAdmin() {
       <DashboardHeader
         titre="Actualites"
         sousTitre={`${actualites.length} articles publies`}
-      />
-
-      <div className="p-6">
-        {/* Barre d'actions */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3 flex-1 w-full sm:w-auto">
-            {/* Recherche */}
-            <div className="relative flex-1 max-w-sm">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gris-400" />
-              <input
-                type="text"
-                placeholder="Rechercher un article..."
-                value={recherche}
-                onChange={(e) => setRecherche(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gris-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-bleu/20 focus:border-bleu"
-              />
-            </div>
-            {/* Filtre categorie */}
-            <div className="relative">
-              <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gris-400" />
-              <select
-                value={filtre}
-                onChange={(e) => setFiltre(e.target.value)}
-                className="pl-8 pr-8 py-2.5 rounded-xl border border-gris-200 bg-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-bleu/20"
-              >
-                <option value="tous">Toutes</option>
-                {Object.entries(categories).map(([key, cat]) => (
-                  <option key={key} value={key}>{cat.label}</option>
-                ))}
-              </select>
-            </div>
-          </div>
+        actions={
           <Link
             href="/dashboard/actualites/nouveau"
-            className="inline-flex items-center gap-2 bg-bleu text-white font-medium px-5 py-2.5 rounded-xl hover:bg-bleu-light transition-colors shadow-md"
+            className="inline-flex items-center gap-2 bg-bleu text-white font-medium text-sm px-4 py-2.5 rounded-xl hover:bg-bleu-light transition-colors shadow-md"
           >
-            <Plus size={18} />
-            Nouvel Article
+            <Plus size={16} />
+            <span className="hidden sm:inline">Nouvel Article</span>
           </Link>
+        }
+      />
+
+      <div className="p-4 sm:p-6 lg:p-8">
+        {/* Filtres */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <div className="relative flex-1 max-w-md">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gris-400" />
+            <input
+              type="text"
+              placeholder="Rechercher..."
+              value={recherche}
+              onChange={(e) => setRecherche(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gris-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-bleu/20 focus:border-bleu"
+            />
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            <button
+              onClick={() => setFiltre('tous')}
+              className={`px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
+                filtre === 'tous' ? 'bg-bleu text-white shadow' : 'bg-white text-gris-600 border border-gris-200 hover:border-bleu/30'
+              }`}
+            >
+              Tous ({actualites.length})
+            </button>
+            {Object.entries(categories).map(([key, cat]) => {
+              const count = actualites.filter(a => a.categorie === key).length;
+              if (count === 0) return null;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setFiltre(key)}
+                  className={`px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
+                    filtre === key ? 'bg-bleu text-white shadow' : 'bg-white text-gris-600 border border-gris-200 hover:border-bleu/30'
+                  }`}
+                >
+                  {cat.label} ({count})
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Tableau des actualites */}
-        <div className="bg-white rounded-2xl border border-gris-100 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-gris-50 text-left">
-                  <th className="px-5 py-3 text-xs font-semibold text-gris-500 uppercase">Article</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gris-500 uppercase">Categorie</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gris-500 uppercase">Date</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gris-500 uppercase">Statut</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gris-500 uppercase text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gris-100">
-                {filtrees.map((actu) => {
-                  const cat = categories[actu.categorie];
-                  return (
-                    <tr key={actu.id} className="hover:bg-gris-50/50 transition-colors">
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-14 h-10 rounded-lg overflow-hidden bg-gris-100 shrink-0 relative">
-                            {actu.image.startsWith('http') ? (
-                              <Image src={actu.image} alt="" fill className="object-cover" />
-                            ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-bleu/10 to-bleu/5" />
+        {/* Liste des articles */}
+        {filtrees.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-gris-100 p-12 text-center">
+            <Newspaper size={48} className="mx-auto text-gris-200 mb-4" />
+            <h3 className="text-lg font-semibold text-gris-700 mb-1">Aucun article</h3>
+            <p className="text-sm text-gris-400 mb-6">Modifiez vos filtres ou creez un nouvel article.</p>
+            <Link
+              href="/dashboard/actualites/nouveau"
+              className="inline-flex items-center gap-2 bg-bleu text-white text-sm font-medium px-5 py-2.5 rounded-xl hover:bg-bleu-light transition-colors"
+            >
+              <Plus size={16} />
+              Creer un article
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filtrees.map((actu) => {
+              const cat = categories[actu.categorie];
+              return (
+                <div
+                  key={actu.id}
+                  className="bg-white rounded-2xl border border-gris-100 p-4 sm:p-5 hover:shadow-md transition-all group"
+                >
+                  <div className="flex gap-4">
+                    {/* Thumbnail */}
+                    <div className="hidden sm:block w-24 h-20 rounded-xl overflow-hidden bg-gris-100 shrink-0 relative">
+                      {actu.image.startsWith('http') ? (
+                        <Image src={actu.image} alt={actu.titre} fill className="object-cover" sizes="96px" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-bleu/10 to-bleu/5 flex items-center justify-center">
+                          <Newspaper size={20} className="text-bleu/20" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          {/* Badges */}
+                          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                            <span className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold text-white ${cat.color}`}>
+                              {cat.label}
+                            </span>
+                            {actu.vedette && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-jaune-dark bg-jaune/15 px-2 py-0.5 rounded-md">
+                                <Star size={9} className="fill-current" />
+                                Vedette
+                              </span>
                             )}
                           </div>
-                          <div className="min-w-0">
-                            <h3 className="text-sm font-semibold text-gris-800 truncate max-w-xs">
-                              {actu.titre}
-                            </h3>
-                            <p className="text-xs text-gris-400 truncate max-w-xs">{actu.auteur}</p>
+
+                          {/* Titre */}
+                          <h3 className="font-semibold text-gris-800 text-sm sm:text-base truncate">
+                            {actu.titre}
+                          </h3>
+
+                          {/* Meta */}
+                          <div className="flex items-center gap-3 mt-1.5 text-xs text-gris-400">
+                            <span className="flex items-center gap-1">
+                              <Calendar size={11} />
+                              {new Date(actu.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <User size={11} />
+                              {actu.auteur}
+                            </span>
                           </div>
                         </div>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className={`inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold text-white ${cat.color}`}>
-                          {cat.label}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="text-sm text-gris-600 flex items-center gap-1.5">
-                          <Calendar size={12} className="text-gris-400" />
-                          {new Date(actu.date).toLocaleDateString('fr-FR')}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        {actu.vedette ? (
-                          <span className="inline-flex items-center gap-1 text-xs font-medium text-jaune-dark bg-jaune/10 px-2.5 py-1 rounded-full">
-                            <Star size={10} className="fill-current" />
-                            Vedette
-                          </span>
-                        ) : (
-                          <span className="text-xs text-gris-400">Publie</span>
-                        )}
-                      </td>
-                      <td className="px-5 py-4">
-                        <div className="flex items-center justify-end gap-1 relative">
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-1 shrink-0">
                           <Link
                             href={`/actualites/${actu.slug}`}
-                            className="p-2 rounded-lg hover:bg-gris-100 text-gris-400 hover:text-bleu transition-colors"
-                            title="Voir"
+                            target="_blank"
+                            className="p-2 rounded-lg text-gris-400 hover:text-bleu hover:bg-bleu/5 transition-colors"
+                            title="Voir sur le site"
                           >
                             <Eye size={16} />
                           </Link>
                           <Link
                             href={`/dashboard/actualites/${actu.id}`}
-                            className="p-2 rounded-lg hover:bg-gris-100 text-gris-400 hover:text-bleu transition-colors"
+                            className="p-2 rounded-lg text-gris-400 hover:text-bleu hover:bg-bleu/5 transition-colors"
                             title="Modifier"
                           >
                             <Edit3 size={16} />
                           </Link>
                           <button
-                            onClick={() => setMenuOuvert(menuOuvert === actu.id ? null : actu.id)}
-                            className="p-2 rounded-lg hover:bg-gris-100 text-gris-400 hover:text-gris-700 transition-colors"
+                            onClick={() => {
+                              modifierActualite(actu.id, { vedette: !actu.vedette });
+                            }}
+                            className={`p-2 rounded-lg transition-colors ${
+                              actu.vedette
+                                ? 'text-jaune hover:text-jaune-dark hover:bg-jaune/10'
+                                : 'text-gris-400 hover:text-jaune hover:bg-jaune/5'
+                            }`}
+                            title={actu.vedette ? 'Retirer vedette' : 'Mettre en vedette'}
                           >
-                            <MoreVertical size={16} />
+                            <Star size={16} className={actu.vedette ? 'fill-current' : ''} />
                           </button>
-                          {/* Menu contextuel */}
-                          {menuOuvert === actu.id && (
-                            <div className="absolute right-0 top-10 bg-white rounded-xl shadow-xl border border-gris-100 py-1.5 z-10 w-44">
-                              <button
-                                onClick={() => toggleVedette(actu.id, actu.vedette)}
-                                className="w-full text-left px-4 py-2 text-sm text-gris-700 hover:bg-gris-50 flex items-center gap-2"
-                              >
-                                <Star size={14} className={actu.vedette ? 'text-jaune fill-jaune' : ''} />
-                                {actu.vedette ? 'Retirer vedette' : 'Mettre en vedette'}
-                              </button>
-                              <button
-                                onClick={() => handleSupprimer(actu.id)}
-                                className="w-full text-left px-4 py-2 text-sm text-rouge hover:bg-rouge/5 flex items-center gap-2"
-                              >
-                                <Trash2 size={14} />
-                                Supprimer
-                              </button>
-                            </div>
-                          )}
+                          <button
+                            onClick={() => handleSupprimer(actu.id)}
+                            className="p-2 rounded-lg text-gris-400 hover:text-rouge hover:bg-rouge/5 transition-colors"
+                            title="Supprimer"
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
+        )}
 
-          {filtrees.length === 0 && (
-            <div className="text-center py-16">
-              <Newspaper size={40} className="mx-auto text-gris-300 mb-3" />
-              <p className="text-gris-500 font-medium">Aucun article trouve</p>
-              <p className="text-sm text-gris-400 mt-1">Modifiez vos filtres ou creez un nouvel article</p>
-            </div>
-          )}
-        </div>
+        {/* Count */}
+        {filtrees.length > 0 && (
+          <p className="text-center text-xs text-gris-400 mt-6">
+            {filtrees.length} article{filtrees.length > 1 ? 's' : ''} affiche{filtrees.length > 1 ? 's' : ''}
+          </p>
+        )}
       </div>
     </>
   );

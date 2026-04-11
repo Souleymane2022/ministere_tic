@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, ArrowLeft, Eye, Star, ImageIcon } from 'lucide-react';
+import Link from 'next/link';
+import { Save, ArrowLeft, Star, ImageIcon, Check } from 'lucide-react';
 import { useAdmin } from '@/lib/admin-store';
 import { Actualite, categories } from '@/data/actualites';
+import DashboardHeader from './DashboardHeader';
 
 interface ActualiteFormProps {
   actualite?: Actualite;
@@ -40,7 +42,7 @@ export default function ActualiteForm({ actualite, mode }: ActualiteFormProps) {
   });
 
   const [sauvegarde, setSauvegarde] = useState(false);
-  const [previewImage, setPreviewImage] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (field: string, value: string | boolean) => {
     setForm((prev) => {
@@ -54,6 +56,7 @@ export default function ActualiteForm({ actualite, mode }: ActualiteFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     const data = {
       titre: form.titre,
@@ -75,211 +78,210 @@ export default function ActualiteForm({ actualite, mode }: ActualiteFormProps) {
     }
 
     setSauvegarde(true);
-    setTimeout(() => {
-      router.push('/dashboard/actualites');
-    }, 1000);
+    setLoading(false);
+    setTimeout(() => router.push('/dashboard/actualites'), 1500);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 max-w-5xl mx-auto">
-      {/* Top bar */}
-      <div className="flex items-center justify-between mb-6">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="inline-flex items-center gap-2 text-gris-600 hover:text-gris-900 transition-colors text-sm"
-        >
-          <ArrowLeft size={16} />
-          Retour
-        </button>
-        <div className="flex items-center gap-3">
-          {sauvegarde && (
-            <span className="text-sm text-green-600 font-medium animate-fadeInUp">
-              Sauvegarde effectuee !
-            </span>
-          )}
-          <button
-            type="submit"
-            className="inline-flex items-center gap-2 bg-bleu text-white font-medium px-6 py-2.5 rounded-xl hover:bg-bleu-light transition-colors shadow-md"
-          >
-            <Save size={16} />
-            {mode === 'creation' ? 'Publier' : 'Sauvegarder'}
-          </button>
-        </div>
-      </div>
+    <>
+      <DashboardHeader
+        titre={mode === 'creation' ? 'Nouvel Article' : 'Modifier l\'Article'}
+        sousTitre={mode === 'edition' ? actualite?.titre : 'Creer et publier un nouvel article'}
+        actions={
+          <div className="flex items-center gap-2">
+            {sauvegarde && (
+              <span className="hidden sm:flex items-center gap-1.5 text-sm text-green-600 font-medium bg-green-50 px-3 py-1.5 rounded-lg">
+                <Check size={14} />
+                Sauvegarde !
+              </span>
+            )}
+            <button
+              type="submit"
+              form="article-form"
+              disabled={loading}
+              className="inline-flex items-center gap-2 bg-bleu text-white font-medium text-sm px-5 py-2.5 rounded-xl hover:bg-bleu-light transition-colors shadow-md disabled:opacity-50"
+            >
+              <Save size={16} />
+              <span className="hidden sm:inline">{mode === 'creation' ? 'Publier' : 'Sauvegarder'}</span>
+            </button>
+          </div>
+        }
+      />
 
-      <div className="grid lg:grid-cols-[1fr_320px] gap-6">
-        {/* Colonne principale */}
-        <div className="space-y-5">
-          {/* Titre */}
-          <div className="bg-white rounded-2xl border border-gris-100 p-5">
-            <label className="block text-sm font-semibold text-gris-800 mb-2">
-              Titre de l&apos;article *
-            </label>
-            <input
-              type="text"
-              required
-              value={form.titre}
-              onChange={(e) => handleChange('titre', e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gris-200 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-bleu/20 focus:border-bleu"
-              placeholder="Entrez le titre de l'article..."
-            />
-            <div className="mt-2 flex items-center gap-2">
-              <span className="text-xs text-gris-400">Slug :</span>
+      <form id="article-form" onSubmit={handleSubmit} className="p-4 sm:p-6 lg:p-8">
+        {/* Retour */}
+        <Link
+          href="/dashboard/actualites"
+          className="inline-flex items-center gap-1.5 text-sm text-gris-500 hover:text-gris-800 transition-colors mb-6"
+        >
+          <ArrowLeft size={14} />
+          Retour aux articles
+        </Link>
+
+        <div className="grid lg:grid-cols-5 gap-6">
+          {/* Colonne principale (3/5) */}
+          <div className="lg:col-span-3 space-y-4">
+            {/* Titre */}
+            <div className="bg-white rounded-2xl border border-gris-100 p-5">
+              <label className="block text-sm font-semibold text-gris-700 mb-2">Titre *</label>
               <input
                 type="text"
-                value={form.slug}
-                onChange={(e) => handleChange('slug', e.target.value)}
-                className="flex-1 px-2 py-1 text-xs text-gris-500 bg-gris-50 rounded border border-gris-200 focus:outline-none"
+                required
+                value={form.titre}
+                onChange={(e) => handleChange('titre', e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gris-200 text-base font-medium focus:outline-none focus:ring-2 focus:ring-bleu/20 focus:border-bleu transition-all"
+                placeholder="Titre de l'article..."
+              />
+              <div className="mt-2 flex items-center gap-2">
+                <span className="text-[11px] text-gris-400">Slug :</span>
+                <input
+                  type="text"
+                  value={form.slug}
+                  onChange={(e) => handleChange('slug', e.target.value)}
+                  className="flex-1 px-2 py-1 text-xs text-gris-500 bg-gris-50 rounded-lg border border-gris-200 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Resume */}
+            <div className="bg-white rounded-2xl border border-gris-100 p-5">
+              <label className="block text-sm font-semibold text-gris-700 mb-2">Resume *</label>
+              <textarea
+                required
+                rows={3}
+                value={form.resume}
+                onChange={(e) => handleChange('resume', e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gris-200 text-sm focus:outline-none focus:ring-2 focus:ring-bleu/20 focus:border-bleu resize-none transition-all"
+                placeholder="Resume court visible dans les cartes..."
+              />
+            </div>
+
+            {/* Contenu */}
+            <div className="bg-white rounded-2xl border border-gris-100 p-5">
+              <label className="block text-sm font-semibold text-gris-700 mb-1">Contenu *</label>
+              <p className="text-[11px] text-gris-400 mb-3">**gras** pour le gras, - pour les listes</p>
+              <textarea
+                required
+                rows={14}
+                value={form.contenu}
+                onChange={(e) => handleChange('contenu', e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gris-200 text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-bleu/20 focus:border-bleu resize-y min-h-[200px] transition-all"
+                placeholder="Contenu complet de l'article..."
               />
             </div>
           </div>
 
-          {/* Resume */}
-          <div className="bg-white rounded-2xl border border-gris-100 p-5">
-            <label className="block text-sm font-semibold text-gris-800 mb-2">
-              Resume *
-            </label>
-            <textarea
-              required
-              rows={3}
-              value={form.resume}
-              onChange={(e) => handleChange('resume', e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gris-200 text-sm focus:outline-none focus:ring-2 focus:ring-bleu/20 focus:border-bleu resize-none"
-              placeholder="Resume court de l'article (visible dans les cartes)..."
-            />
-          </div>
-
-          {/* Contenu */}
-          <div className="bg-white rounded-2xl border border-gris-100 p-5">
-            <label className="block text-sm font-semibold text-gris-800 mb-2">
-              Contenu de l&apos;article *
-            </label>
-            <p className="text-xs text-gris-400 mb-3">
-              Utilisez **texte** pour le gras, et commencez une ligne par - pour les listes.
-            </p>
-            <textarea
-              required
-              rows={15}
-              value={form.contenu}
-              onChange={(e) => handleChange('contenu', e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gris-200 text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-bleu/20 focus:border-bleu resize-y"
-              placeholder="Ecrivez le contenu complet de l'article..."
-            />
-          </div>
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-5">
-          {/* Image */}
-          <div className="bg-white rounded-2xl border border-gris-100 p-5">
-            <label className="block text-sm font-semibold text-gris-800 mb-2">
-              Image de couverture
-            </label>
-            <div className="space-y-3">
-              {form.image && (
-                <div className="relative w-full h-40 rounded-xl overflow-hidden bg-gris-100">
-                  {form.image.startsWith('http') ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={form.image} alt="Preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <ImageIcon size={30} className="text-gris-300" />
-                    </div>
-                  )}
+          {/* Sidebar (2/5) */}
+          <div className="lg:col-span-2 space-y-4">
+            {/* Image */}
+            <div className="bg-white rounded-2xl border border-gris-100 p-5">
+              <label className="block text-sm font-semibold text-gris-700 mb-2">Image</label>
+              {form.image ? (
+                <div className="w-full h-36 rounded-xl overflow-hidden bg-gris-100 mb-3 relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={form.image} alt="Apercu" className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <div className="w-full h-36 rounded-xl bg-gris-50 border-2 border-dashed border-gris-200 flex flex-col items-center justify-center mb-3">
+                  <ImageIcon size={28} className="text-gris-300 mb-1" />
+                  <p className="text-xs text-gris-400">Collez une URL ci-dessous</p>
                 </div>
               )}
               <input
                 type="url"
                 value={form.image}
                 onChange={(e) => handleChange('image', e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-gris-200 text-sm focus:outline-none focus:ring-2 focus:ring-bleu/20"
-                placeholder="URL de l'image..."
-              />
-              <p className="text-[10px] text-gris-400">
-                Collez une URL d&apos;image (Unsplash, Pexels, etc.)
-              </p>
-            </div>
-          </div>
-
-          {/* Categorie */}
-          <div className="bg-white rounded-2xl border border-gris-100 p-5">
-            <label className="block text-sm font-semibold text-gris-800 mb-2">
-              Categorie *
-            </label>
-            <select
-              value={form.categorie}
-              onChange={(e) => handleChange('categorie', e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl border border-gris-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-bleu/20"
-            >
-              {Object.entries(categories).map(([key, cat]) => (
-                <option key={key} value={key}>{cat.label}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Date & Auteur */}
-          <div className="bg-white rounded-2xl border border-gris-100 p-5 space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-gris-800 mb-2">Date</label>
-              <input
-                type="date"
-                value={form.date}
-                onChange={(e) => handleChange('date', e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-gris-200 text-sm focus:outline-none focus:ring-2 focus:ring-bleu/20"
+                className="w-full px-3 py-2.5 rounded-xl border border-gris-200 text-sm focus:outline-none focus:ring-2 focus:ring-bleu/20 transition-all"
+                placeholder="https://images.unsplash.com/..."
               />
             </div>
-            <div>
-              <label className="block text-sm font-semibold text-gris-800 mb-2">Auteur</label>
-              <input
-                type="text"
-                value={form.auteur}
-                onChange={(e) => handleChange('auteur', e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-gris-200 text-sm focus:outline-none focus:ring-2 focus:ring-bleu/20"
-                placeholder="Nom de l'auteur"
-              />
-            </div>
-          </div>
 
-          {/* Tags */}
-          <div className="bg-white rounded-2xl border border-gris-100 p-5">
-            <label className="block text-sm font-semibold text-gris-800 mb-2">Tags</label>
-            <input
-              type="text"
-              value={form.tags}
-              onChange={(e) => handleChange('tags', e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-gris-200 text-sm focus:outline-none focus:ring-2 focus:ring-bleu/20"
-              placeholder="Tag1, Tag2, Tag3..."
-            />
-            <p className="text-[10px] text-gris-400 mt-1">Separez les tags par des virgules</p>
-          </div>
-
-          {/* Vedette */}
-          <div className="bg-white rounded-2xl border border-gris-100 p-5">
-            <label className="flex items-center justify-between cursor-pointer">
-              <div className="flex items-center gap-2">
-                <Star size={16} className={form.vedette ? 'text-jaune fill-jaune' : 'text-gris-400'} />
-                <span className="text-sm font-semibold text-gris-800">Article vedette</span>
-              </div>
-              <div
-                className={`w-10 h-5 rounded-full transition-colors relative ${
-                  form.vedette ? 'bg-bleu' : 'bg-gris-300'
-                }`}
-                onClick={() => handleChange('vedette', !form.vedette)}
+            {/* Categorie */}
+            <div className="bg-white rounded-2xl border border-gris-100 p-5">
+              <label className="block text-sm font-semibold text-gris-700 mb-2">Categorie *</label>
+              <select
+                value={form.categorie}
+                onChange={(e) => handleChange('categorie', e.target.value)}
+                className="w-full px-3 py-2.5 rounded-xl border border-gris-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-bleu/20 transition-all"
               >
-                <div
-                  className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
-                    form.vedette ? 'translate-x-5' : 'translate-x-0.5'
-                  }`}
+                {Object.entries(categories).map(([key, cat]) => (
+                  <option key={key} value={key}>{cat.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Date & Auteur */}
+            <div className="bg-white rounded-2xl border border-gris-100 p-5 space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gris-700 mb-2">Date</label>
+                <input
+                  type="date"
+                  value={form.date}
+                  onChange={(e) => handleChange('date', e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl border border-gris-200 text-sm focus:outline-none focus:ring-2 focus:ring-bleu/20 transition-all"
                 />
               </div>
-            </label>
-            <p className="text-[10px] text-gris-400 mt-2">
-              Les articles vedette apparaissent en premier sur la page d&apos;accueil
-            </p>
+              <div>
+                <label className="block text-sm font-semibold text-gris-700 mb-2">Auteur</label>
+                <input
+                  type="text"
+                  value={form.auteur}
+                  onChange={(e) => handleChange('auteur', e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl border border-gris-200 text-sm focus:outline-none focus:ring-2 focus:ring-bleu/20 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Tags */}
+            <div className="bg-white rounded-2xl border border-gris-100 p-5">
+              <label className="block text-sm font-semibold text-gris-700 mb-2">Tags</label>
+              <input
+                type="text"
+                value={form.tags}
+                onChange={(e) => handleChange('tags', e.target.value)}
+                className="w-full px-3 py-2.5 rounded-xl border border-gris-200 text-sm focus:outline-none focus:ring-2 focus:ring-bleu/20 transition-all"
+                placeholder="Tag1, Tag2, Tag3..."
+              />
+              <p className="text-[11px] text-gris-400 mt-1.5">Separes par des virgules</p>
+            </div>
+
+            {/* Vedette */}
+            <div className="bg-white rounded-2xl border border-gris-100 p-5">
+              <button
+                type="button"
+                onClick={() => handleChange('vedette', !form.vedette)}
+                className={`w-full flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
+                  form.vedette
+                    ? 'border-jaune bg-jaune/5'
+                    : 'border-gris-200 hover:border-gris-300'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Star
+                    size={20}
+                    className={form.vedette ? 'text-jaune fill-jaune' : 'text-gris-400'}
+                  />
+                  <div className="text-left">
+                    <p className="text-sm font-semibold text-gris-800">Article vedette</p>
+                    <p className="text-[11px] text-gris-400">Affiche en priorite sur l&apos;accueil</p>
+                  </div>
+                </div>
+                <div
+                  className={`w-10 h-6 rounded-full transition-colors relative ${
+                    form.vedette ? 'bg-jaune' : 'bg-gris-300'
+                  }`}
+                >
+                  <div
+                    className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${
+                      form.vedette ? 'translate-x-5' : 'translate-x-1'
+                    }`}
+                  />
+                </div>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </>
   );
 }

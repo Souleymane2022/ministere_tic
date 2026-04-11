@@ -12,9 +12,9 @@ export default function DashboardLayout({
 }) {
   return (
     <AdminProvider>
-      <div className="min-h-screen bg-gris-50 flex">
+      <div className="min-h-screen bg-gris-50">
         <Sidebar />
-        <div className="flex-1 ml-64">
+        <div className="lg:ml-64 min-h-screen">
           {children}
         </div>
       </div>

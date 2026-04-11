@@ -9,11 +9,10 @@ import {
   Building2,
   Settings,
   Globe,
-  LogOut,
-  ChevronLeft,
-  ChevronRight,
+  X,
+  Menu,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const menuItems = [
   { nom: 'Tableau de Bord', href: '/dashboard', icon: LayoutDashboard },
@@ -25,79 +24,111 @@ const menuItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Fermer le menu mobile sur changement de route
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   const isActive = (href: string) => {
     if (href === '/dashboard') return pathname === '/dashboard';
     return pathname.startsWith(href);
   };
 
-  return (
-    <aside
-      className={`fixed left-0 top-0 h-full bg-[#0a0e27] text-white z-50 transition-all duration-300 flex flex-col ${
-        collapsed ? 'w-[72px]' : 'w-64'
-      }`}
-    >
+  const sidebarContent = (
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-white/10">
+      <div className="p-5 border-b border-white/10 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-jaune to-jaune-dark flex items-center justify-center shrink-0">
-            <span className="text-bleu font-bold text-sm">TD</span>
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-jaune to-jaune-dark flex items-center justify-center shrink-0 shadow-lg shadow-jaune/20">
+            <span className="text-bleu font-bold text-xs">TD</span>
           </div>
-          {!collapsed && (
-            <div className="overflow-hidden">
-              <div className="font-bold text-sm">MTENDA</div>
-              <div className="text-[10px] text-white/50">Administration</div>
-            </div>
-          )}
+          <div>
+            <div className="font-bold text-sm text-white">MTENDA</div>
+            <div className="text-[10px] text-white/40">Administration</div>
+          </div>
         </div>
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="lg:hidden p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10"
+          aria-label="Fermer le menu"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      {/* Label section */}
+      <div className="px-5 pt-5 pb-2">
+        <p className="text-[10px] font-semibold text-white/30 uppercase tracking-widest">Menu</p>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
         {menuItems.map((item) => {
           const active = isActive(item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                 active
-                  ? 'bg-bleu text-white shadow-lg shadow-bleu/30'
-                  : 'text-white/60 hover:text-white hover:bg-white/5'
+                  ? 'bg-bleu text-white shadow-lg shadow-bleu/25'
+                  : 'text-white/50 hover:text-white hover:bg-white/5'
               }`}
-              title={collapsed ? item.nom : undefined}
             >
-              <item.icon size={20} className={`shrink-0 ${active ? 'text-jaune' : 'group-hover:text-jaune/70'}`} />
-              {!collapsed && (
-                <span className="text-sm font-medium truncate">{item.nom}</span>
-              )}
-              {active && !collapsed && (
-                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-jaune" />
-              )}
+              <item.icon size={18} className={active ? 'text-jaune' : 'group-hover:text-jaune/60'} />
+              <span className="text-sm font-medium">{item.nom}</span>
+              {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-jaune" />}
             </Link>
           );
         })}
       </nav>
 
       {/* Footer */}
-      <div className="p-3 border-t border-white/10 space-y-1">
+      <div className="p-3 border-t border-white/10 mt-auto">
         <Link
           href="/"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all"
-          title={collapsed ? 'Voir le site' : undefined}
+          target="_blank"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/40 hover:text-white hover:bg-white/5 transition-all"
         >
-          <Globe size={20} className="shrink-0" />
-          {!collapsed && <span className="text-sm">Voir le Site</span>}
+          <Globe size={18} />
+          <span className="text-sm">Voir le Site</span>
         </Link>
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:text-white/70 transition-all w-full"
-        >
-          {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
-          {!collapsed && <span className="text-sm">Reduire</span>}
-        </button>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Bouton burger mobile */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="fixed top-4 left-4 z-40 lg:hidden bg-[#0a0e27] text-white p-2.5 rounded-xl shadow-xl"
+        aria-label="Ouvrir le menu"
+      >
+        <Menu size={20} />
+      </button>
+
+      {/* Sidebar Desktop */}
+      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-64 bg-[#0a0e27] text-white z-40 flex-col shadow-2xl">
+        {sidebarContent}
+      </aside>
+
+      {/* Sidebar Mobile - Overlay */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setMobileOpen(false)}
+          />
+          {/* Drawer */}
+          <aside className="relative w-72 h-full bg-[#0a0e27] text-white shadow-2xl animate-slideInLeft">
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }
