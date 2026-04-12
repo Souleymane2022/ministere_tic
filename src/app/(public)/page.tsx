@@ -41,10 +41,13 @@ export default function Home() {
               <div className="relative">
                 <div className="w-full aspect-[4/5] max-w-md rounded-2xl overflow-hidden relative shadow-2xl mx-auto lg:mx-0">
                   <Image
-                    src="/images/ministre/haliki-choua-mahamat.jpeg"
+                    src="/images/ministre/haliki-choua-mahamat.jpg"
                     alt={ministere.ministre.nom}
                     fill
-                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 500px"
+                    quality={95}
+                    priority
+                    className="object-cover object-top"
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-bleu-dark via-bleu-dark/70 to-transparent p-6">
                     <h3 className="text-white font-bold text-lg">{ministere.ministre.nom}</h3>

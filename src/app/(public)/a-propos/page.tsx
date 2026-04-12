@@ -137,7 +137,7 @@ export default function AProposPage() {
           {/* Equipe dirigeante */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {[
-              { ...ministere.ministre, role: 'Ministre', photo: '/images/ministre/haliki-choua-mahamat.jpeg' },
+              { ...ministere.ministre, role: 'Ministre', photo: '/images/ministre/haliki-choua-mahamat.jpg' },
               { nom: ministere.secretaireGeneral.nom, titre: ministere.secretaireGeneral.titre, role: 'Secretaire General', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80' },
               { nom: ministere.secretaireGeneralAdjoint.nom, titre: ministere.secretaireGeneralAdjoint.titre, role: 'SGA', photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=80' },
               { nom: ministere.inspecteurGeneral.nom, titre: ministere.inspecteurGeneral.titre, role: 'Inspecteur General', photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80' },
@@ -149,7 +149,9 @@ export default function AProposPage() {
                       src={personne.photo}
                       alt={personne.nom}
                       fill
-                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 300px"
+                      quality={90}
+                      className="object-cover object-top"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-bleu-dark/40 to-transparent" />
                   </div>
