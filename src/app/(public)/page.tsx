@@ -41,7 +41,7 @@ export default function Home() {
               <div className="relative">
                 <div className="w-full aspect-[4/5] max-w-md rounded-2xl overflow-hidden relative shadow-2xl mx-auto lg:mx-0">
                   <Image
-                    src="/images/ministre/haliki-choua-mahamat.jpg"
+                    src="/images/ministre/haliki-choua-mahamat.jpeg"
                     alt={ministere.ministre.nom}
                     fill
                     className="object-cover"
