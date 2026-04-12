@@ -51,7 +51,7 @@ export default function MinistrePage() {
                 <div className="rounded-2xl overflow-hidden shadow-2xl">
                   <div className="aspect-[3/4] relative">
                     <Image
-                      src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&auto=format&fit=crop&q=80"
+                      src="/images/ministre/haliki-choua-mahamat.jpg"
                       alt={ministere.ministre.nom}
                       fill
                       className="object-cover"
