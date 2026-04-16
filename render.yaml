@@ -1,0 +1,55 @@
+services:
+  # ============== BACKEND API ==============
+  - type: web
+    name: sht-backend
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: |
+      npm install
+      cd server && npm install && cd ..
+      npx prisma generate
+      npx prisma db push --accept-data-loss --skip-generate
+      node prisma/seed.js || true
+    startCommand: node server/src/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - key: UPLOAD_PATH
+        value: /tmp/uploads
+      - key: TOTP_ISSUER
+        value: SHT-Portail
+      - key: BCRYPT_ROUNDS
+        value: "10"
+      - key: CLIENT_URL
+        sync: false
+
+  # ============== FRONTEND (static) ==============
+  - type: web
+    runtime: static
+    name: sht-frontend
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: client/dist
+    pullRequestPreviewsEnabled: false
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN

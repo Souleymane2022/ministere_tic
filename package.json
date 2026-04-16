@@ -18,7 +18,10 @@
     "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "db:seed": "node prisma/seed.js",
+    "db:seed:force": "SEED_FORCE=true node prisma/seed.js",
+    "db:push": "prisma db push",
     "db:reset": "prisma migrate reset --force",
+    "start:server": "node server/src/index.js",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "install:all": "npm install && npm --workspace server install && npm --workspace client install"

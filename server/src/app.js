@@ -13,9 +13,25 @@ const { errorHandler, notFoundHandler } = require('./middlewares/error');
 function createApp() {
   const app = express();
 
+  // Render / Vercel / Heroku placent l'app derrière un proxy
+  app.set('trust proxy', 1);
+
   app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+
+  // CORS tolérant pour les déploiements gratuits (Vercel, Render, Netlify)
+  const allowedOriginPatterns = [
+    /^https?:\/\/localhost(:\d+)?$/,
+    /\.vercel\.app$/,
+    /\.onrender\.com$/,
+    /\.netlify\.app$/,
+  ];
   app.use(cors({
-    origin: env.CLIENT_URL,
+    origin: (origin, cb) => {
+      if (!origin) return cb(null, true);
+      if (env.CLIENT_URL && origin === env.CLIENT_URL) return cb(null, true);
+      if (allowedOriginPatterns.some((r) => r.test(origin))) return cb(null, true);
+      cb(new Error('Origin non autorisée : ' + origin));
+    },
     credentials: true,
   }));
   app.use(compression());

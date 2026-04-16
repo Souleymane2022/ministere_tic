@@ -1,189 +1,159 @@
-# Guide de déploiement — Portail SHT
+# 🚀 Déploiement GRATUIT du Portail SHT
 
-## Architecture recommandée
+**Coût : 0 FCFA / mois** ✨
 
-```
-┌─────────────────┐       ┌──────────────────┐       ┌──────────────┐
-│  Frontend       │       │  Backend API     │       │  PostgreSQL  │
-│  (Vercel)       │──────▶│  (Railway)       │──────▶│  (Railway)   │
-│  React + Vite   │       │  Express + WS    │       │  + Redis     │
-└─────────────────┘       └──────────────────┘       └──────────────┘
-```
+## Stack utilisée
 
-## Étape 1 — Déployer le backend sur Railway
+| Service | Rôle | Limites free |
+|---|---|---|
+| **Neon** | PostgreSQL | 3 Go, toujours actif |
+| **Render** | Backend Express + Frontend statique | 750h/mois, s'endort après 15min d'inactivité |
+| **GitHub** | Code source | illimité |
 
-### 1.1 Créer un compte
-1. Va sur https://railway.app et connecte-toi avec GitHub
-2. Clique sur **"New Project"** → **"Deploy from GitHub repo"**
-3. Sélectionne `Souleymane2022/sht-portail`
-
-### 1.2 Ajouter PostgreSQL
-1. Dans ton projet Railway, clique **"+ New"** → **"Database"** → **"PostgreSQL"**
-2. Railway crée la BDD automatiquement et génère `DATABASE_URL`
-
-### 1.3 Ajouter Redis (optionnel, pour le cache)
-1. **"+ New"** → **"Database"** → **"Redis"**
-2. Génère `REDIS_URL` automatiquement
-
-### 1.4 Configurer les variables d'environnement
-
-Sur le service backend, onglet **"Variables"**, ajoute :
-
-| Variable | Valeur |
-|---|---|
-| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` (référence auto) |
-| `REDIS_URL` | `${{Redis.REDIS_URL}}` (optionnel) |
-| `JWT_SECRET` | *(une chaîne aléatoire longue, min 32 caractères)* |
-| `JWT_REFRESH_SECRET` | *(une autre chaîne aléatoire)* |
-| `JWT_EXPIRES_IN` | `15m` |
-| `JWT_REFRESH_EXPIRES_IN` | `7d` |
-| `CLIENT_URL` | *(l'URL Vercel, on la met après)* |
-| `PORT` | `5000` |
-| `NODE_ENV` | `production` |
-| `UPLOAD_PATH` | `/tmp/uploads` |
-| `TOTP_ISSUER` | `SHT-Portail` |
-| `BCRYPT_ROUNDS` | `10` |
-
-### 1.5 Configurer le build/start
-
-Dans **Settings → Build** du service backend :
-- **Root Directory** : laisser vide
-- **Build Command** : `npm install && npx prisma generate && npx prisma migrate deploy`
-- **Start Command** : `node server/src/index.js`
-
-Railway va déployer et te donner une URL, par exemple :
-`https://sht-portail-backend-production.up.railway.app`
-
-### 1.6 Peupler la BDD (une seule fois)
-
-Dans l'interface Railway, ouvre le **shell** du service backend et lance :
-```bash
-node prisma/seed.js
-```
-
-Ou en local avec la `DATABASE_URL` de Railway :
-```bash
-DATABASE_URL="..." npm run db:seed
-```
+> ⚠️ Le backend Render free "s'endort" après 15 min sans activité. Le **premier appel après sommeil prend 30-60s** (cold start). C'est normal.
 
 ---
 
-## Étape 2 — Déployer le frontend sur Vercel
+## 📱 Étapes détaillées (depuis ton téléphone)
 
-### 2.1 Importer le repo
-1. Va sur https://vercel.com → **"Add New Project"**
-2. Importe `Souleymane2022/sht-portail`
-3. Vercel détecte Vite automatiquement
+### Étape 1 — Créer la base de données Neon (2 min)
 
-### 2.2 Configurer le build
-
-| Champ | Valeur |
-|---|---|
-| **Framework Preset** | Vite |
-| **Root Directory** | `client` |
-| **Build Command** | `npm run build` |
-| **Output Directory** | `dist` |
-| **Install Command** | `npm install` |
-
-### 2.3 Variables d'environnement Vercel
-
-| Variable | Valeur |
-|---|---|
-| `VITE_API_URL` | `https://sht-portail-backend-production.up.railway.app` *(ton URL Railway)* |
-
-### 2.4 Déployer
-Clique **"Deploy"**. Vercel te donne une URL : `https://sht-portail.vercel.app`
-
-### 2.5 Revenir sur Railway pour compléter
-Modifie la variable `CLIENT_URL` sur Railway avec l'URL Vercel :
-```
-CLIENT_URL=https://sht-portail.vercel.app
-```
-
-Relance le backend Railway.
+1. Va sur 👉 **https://neon.tech**
+2. **"Sign up with GitHub"** (aucune carte requise)
+3. Une fois connecté, clique sur **"Create project"**
+4. Configure :
+   - **Name** : `sht-portail`
+   - **Region** : Frankfurt (Europe) ou plus proche
+   - **Postgres version** : 16
+5. Clique **"Create project"**
+6. ⚠️ **Copie la `Connection string`** qui s'affiche (commence par `postgresql://...`). Garde-la, on en aura besoin.
 
 ---
 
-## Étape 3 — Ajustement du code frontend
+### Étape 2 — Déployer sur Render (5 min)
 
-Pour que le frontend utilise la bonne URL API en production, modifie `client/src/lib/api.js` :
+1. Va sur 👉 **https://render.com**
+2. **"Get Started"** → **"Sign in with GitHub"**
+3. Autorise Render à accéder à ton repo `sht-portail`
+4. Sur le dashboard Render, clique **"+ New"** → **"Blueprint"**
+5. Sélectionne le repo **`Souleymane2022/sht-portail`**
+6. Render détecte automatiquement le fichier `render.yaml`
+7. Render va demander les **variables manquantes** :
+   - **`DATABASE_URL`** → colle ton URL Neon de l'étape 1
+   - **`CLIENT_URL`** → laisse vide pour l'instant (on reviendra)
+   - **`VITE_API_URL`** → laisse vide pour l'instant
+8. Clique **"Apply"** / **"Deploy"**
 
-```js
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api',
-  withCredentials: true,
-});
-```
+Render déploie **2 services** en parallèle :
+- `sht-backend` (API Express)
+- `sht-frontend` (React)
 
-Et `client/src/lib/socket.js` :
-```js
-socket = io(import.meta.env.VITE_API_URL || '/', { auth: { token } });
-```
-
----
-
-## Alternatives
-
-### Option "tout-en-un" : Render.com
-- Plus simple que Vercel+Railway
-- Déployer frontend + backend + PostgreSQL en un seul endroit
-- https://render.com/docs/deploy-node-express-app
-
-### Option classique : VPS + PM2 + Nginx
-Pour un déploiement sur serveur dédié :
-```bash
-# Sur ton serveur
-git clone https://github.com/Souleymane2022/sht-portail.git
-cd sht-portail
-cp .env.example .env  # et remplis les valeurs
-npm run install:all
-npm run prisma:deploy
-npm run db:seed
-npm run build
-pm2 start server/src/index.js --name sht-api
-```
-
-Nginx config :
-```nginx
-server {
-  listen 80;
-  server_name portail.sht-td.com;
-
-  location /api {
-    proxy_pass http://localhost:5000;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-  }
-
-  location / {
-    root /var/www/sht-portail/client/dist;
-    try_files $uri /index.html;
-  }
-}
-```
+Attends 5-10 min (premier build).
 
 ---
 
-## Limitations Vercel à connaître
+### Étape 3 — Connecter frontend et backend (2 min)
 
-| Fonctionnalité | Impact |
-|---|---|
-| **Socket.io** | ❌ Ne fonctionne pas sur Vercel — utilise Railway pour le backend |
-| **Upload disque** | ❌ Stockage non persistant — utilise Vercel Blob ou S3 si backend sur Vercel |
-| **Serverless timeout** | 10s max en free, 60s en Pro — OK pour la plupart des cas |
+Une fois les déploiements terminés, Render te donne 2 URLs :
+- Backend : `https://sht-backend-XXXX.onrender.com`
+- Frontend : `https://sht-frontend-XXXX.onrender.com`
 
-C'est pour ces raisons qu'on met **uniquement le frontend** sur Vercel, pas le backend.
+**Configure le backend pour accepter le frontend :**
+
+1. Dashboard Render → service **`sht-backend`** → onglet **"Environment"**
+2. Édite la variable `CLIENT_URL` :
+   - Valeur : `https://sht-frontend-XXXX.onrender.com` *(ton URL frontend)*
+3. Clique **"Save, rebuild, and deploy"**
+
+**Configure le frontend pour appeler le backend :**
+
+1. Dashboard Render → service **`sht-frontend`** → onglet **"Environment"**
+2. Édite la variable `VITE_API_URL` :
+   - Valeur : `https://sht-backend-XXXX.onrender.com` *(ton URL backend)*
+3. Clique **"Save, rebuild, and deploy"**
+
+Attends le rebuild (3-5 min).
 
 ---
 
-## Check-list post-déploiement
+### Étape 4 — Tester 🎉
 
-- [ ] Backend accessible : `https://TON-BACKEND.railway.app/api/health`
-- [ ] Frontend accessible : `https://TON-FRONT.vercel.app`
+1. Ouvre dans ton navigateur : `https://sht-frontend-XXXX.onrender.com`
+2. ⏱️ Première connexion = 30-60s (réveil du backend endormi)
+3. Page de login SHT s'affiche
+4. Connecte-toi :
+   - Email : `admin@sht-td.com`
+   - Mot de passe : `Admin@SHT2025`
+5. Tu arrives sur le dashboard ✅
+
+---
+
+## 🎁 Bonus : déployer le frontend sur Vercel à la place
+
+Vercel est **plus rapide** (pas de cold start) pour le frontend. Si tu veux :
+
+1. Va sur **https://vercel.com** → "Sign in with GitHub"
+2. **"Add New..."** → **"Project"** → importe `sht-portail`
+3. Configure :
+   - **Root Directory** : `client`
+   - **Framework Preset** : Vite (auto-détecté)
+4. **Environment Variables** :
+   - `VITE_API_URL` = `https://sht-backend-XXXX.onrender.com`
+5. **"Deploy"**
+
+Ton frontend sera sur `https://sht-portail.vercel.app` (chargement instantané).
+
+Pense à mettre à jour `CLIENT_URL` sur Render avec l'URL Vercel.
+
+---
+
+## 🔧 Problèmes fréquents
+
+### "Internal Server Error" au login
+→ Vérifie que `DATABASE_URL` est bien la Neon URL complète dans Render.
+
+### "CORS error" dans la console
+→ Vérifie que `CLIENT_URL` sur le backend = URL du frontend (sans `/` à la fin).
+
+### "Cannot connect to API"
+→ Vérifie que `VITE_API_URL` sur le frontend = URL du backend Render.
+→ Redéploie le frontend après changement (Vite inline les env vars au build).
+
+### Backend "sleeping" - chargement lent au premier appel
+→ Normal sur free tier Render. Solution : ping `/api/health` toutes les 10 min avec **https://cron-job.org** (gratuit).
+
+### Pas de données dans l'app
+→ Le seed tourne au premier déploiement. Pour refaire le seed :
+- Dashboard Render → `sht-backend` → **Shell** → `SEED_FORCE=true node prisma/seed.js`
+
+### Comment voir les logs ?
+→ Dashboard Render → ton service → onglet **"Logs"** (live tail).
+
+---
+
+## 💰 Évolution payante (si besoin)
+
+Si un jour tu dépasses les limites free :
+
+| Upgrade | Coût | Avantage |
+|---|---|---|
+| Render Starter | $7/mois | Backend toujours actif (pas de cold start) |
+| Neon Scale | $19/mois | 10 Go DB + branches |
+| Vercel Pro | $20/mois | Plus de bande passante |
+| VPS (Hetzner/OVH) | 4€/mois | Tout-en-un sur ton serveur |
+
+Pour un usage interne SHT en prod réelle, je recommande un **VPS Hetzner à 4€/mois** qui héberge tout (PostgreSQL, Redis, Node, Nginx) avec SSL Let's Encrypt.
+
+---
+
+## ✅ Check-list finale
+
+- [ ] Neon DB créée et URL copiée
+- [ ] Blueprint Render déployé (2 services)
+- [ ] `DATABASE_URL` configurée sur backend
+- [ ] `CLIENT_URL` configurée sur backend (avec URL frontend)
+- [ ] `VITE_API_URL` configurée sur frontend (avec URL backend)
+- [ ] Les 2 services en statut **"Live"** (vert)
 - [ ] Login fonctionne avec `admin@sht-td.com` / `Admin@SHT2025`
-- [ ] CORS : pas d'erreur dans la console navigateur
-- [ ] Socket.io : ouvre la messagerie, pas d'erreur WebSocket
-- [ ] Upload doc : teste un PDF dans la GED
 
-Bon déploiement ! 🚀
+🎉 **Ton portail SHT est en ligne gratuitement !**

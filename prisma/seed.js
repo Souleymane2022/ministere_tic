@@ -14,28 +14,42 @@ async function hashPwd(pwd) {
 async function main() {
   console.log('Demarrage du seed...');
 
-  // Nettoyage (ordre pour respecter les FK)
-  await prisma.auditLog.deleteMany();
-  await prisma.notification.deleteMany();
-  await prisma.widgetConfig.deleteMany();
-  await prisma.message.deleteMany();
-  await prisma.annonce.deleteMany();
-  await prisma.tache.deleteMany();
-  await prisma.risque.deleteMany();
-  await prisma.projetMembre.deleteMany();
-  await prisma.documentValidation.deleteMany();
-  await prisma.documentHistorique.deleteMany();
-  await prisma.document.deleteMany();
-  await prisma.projet.deleteMany();
-  await prisma.depense.deleteMany();
-  await prisma.contrat.deleteMany();
-  await prisma.budget.deleteMany();
-  await prisma.evaluation.deleteMany();
-  await prisma.presence.deleteMany();
-  await prisma.conge.deleteMany();
-  await prisma.systemSetting.deleteMany();
-  await prisma.user.deleteMany();
-  await prisma.direction.deleteMany();
+  // Mode idempotent : si l'admin existe déjà, on ne refait rien
+  const force = process.env.SEED_FORCE === 'true' || process.argv.includes('--force');
+  const existingAdmin = await prisma.user.findUnique({
+    where: { email: 'admin@sht-td.com' },
+  }).catch(() => null);
+
+  if (existingAdmin && !force) {
+    console.log('✓ Base deja peuplee (compte admin trouve). Passez SEED_FORCE=true pour forcer.');
+    return;
+  }
+
+  if (force) {
+    console.log('⚠ SEED_FORCE actif : nettoyage de la base...');
+    // Nettoyage (ordre pour respecter les FK)
+    await prisma.auditLog.deleteMany();
+    await prisma.notification.deleteMany();
+    await prisma.widgetConfig.deleteMany();
+    await prisma.message.deleteMany();
+    await prisma.annonce.deleteMany();
+    await prisma.tache.deleteMany();
+    await prisma.risque.deleteMany();
+    await prisma.projetMembre.deleteMany();
+    await prisma.documentValidation.deleteMany();
+    await prisma.documentHistorique.deleteMany();
+    await prisma.document.deleteMany();
+    await prisma.projet.deleteMany();
+    await prisma.depense.deleteMany();
+    await prisma.contrat.deleteMany();
+    await prisma.budget.deleteMany();
+    await prisma.evaluation.deleteMany();
+    await prisma.presence.deleteMany();
+    await prisma.conge.deleteMany();
+    await prisma.systemSetting.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.direction.deleteMany();
+  }
 
   // === DIRECTIONS ===
   console.log('Creation des directions...');
