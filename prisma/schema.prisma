@@ -1,0 +1,537 @@
+// ======================================================
+// Portail SHT - Schéma Prisma
+// Base de données : PostgreSQL
+// ======================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============== ENUMS ===============
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  DIRECTEUR
+  AGENT
+}
+
+enum DocumentType {
+  PDF
+  WORD
+  EXCEL
+  IMAGE
+  AUTRE
+}
+
+enum DocumentStatut {
+  SOUMIS
+  EN_REVISION
+  APPROUVE
+  REJETE
+  ARCHIVE
+}
+
+enum CongeType {
+  ANNUEL
+  MALADIE
+  MATERNITE
+  PATERNITE
+  SANS_SOLDE
+  EXCEPTIONNEL
+}
+
+enum CongeStatut {
+  EN_ATTENTE
+  APPROUVE
+  REJETE
+  ANNULE
+}
+
+enum ProjetStatut {
+  PLANIFIE
+  EN_COURS
+  EN_PAUSE
+  TERMINE
+  ANNULE
+}
+
+enum TacheStatut {
+  A_FAIRE
+  EN_COURS
+  EN_REVUE
+  TERMINEE
+  BLOQUEE
+}
+
+enum Priorite {
+  BASSE
+  NORMALE
+  HAUTE
+  URGENTE
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  MESSAGE
+  TACHE
+  CONGE
+  DOCUMENT
+}
+
+enum DepenseStatut {
+  BROUILLON
+  SOUMISE
+  APPROUVEE
+  REJETEE
+  PAYEE
+}
+
+enum AnnonceCategorie {
+  GENERALE
+  RH
+  DIRECTION
+  PROJET
+  URGENT
+}
+
+// =============== MODELS ===============
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  nom         String
+  prenom      String
+  telephone   String?
+  poste       String?
+  avatar      String?
+  role        Role     @default(AGENT)
+  actif       Boolean  @default(true)
+
+  // 2FA
+  twoFactorEnabled Boolean @default(false)
+  twoFactorSecret  String?
+
+  // Refresh token
+  refreshToken String?
+
+  directionId String?
+  direction   Direction? @relation("DirectionAgents", fields: [directionId], references: [id])
+
+  directionResponsable Direction? @relation("DirectionResponsable")
+
+  documentsCreated   Document[]           @relation("DocumentAuteur")
+  validations        DocumentValidation[] @relation("DocumentValidateur")
+  congesDemandes     Conge[]              @relation("CongeAgent")
+  congesApprouves    Conge[]              @relation("CongeApprobateur")
+  presences          Presence[]
+  evaluations        Evaluation[]         @relation("EvaluationAgent")
+  evaluationsFaites  Evaluation[]         @relation("EvaluationEvaluateur")
+  messagesEnvoyes    Message[]            @relation("MessageExpediteur")
+  messagesRecus      Message[]            @relation("MessageDestinataire")
+  notifications      Notification[]
+  projetsDiriges     Projet[]             @relation("ProjetChef")
+  tachesAssignees    Tache[]              @relation("TacheAssignee")
+  depensesDemandees  Depense[]            @relation("DepenseDemandeur")
+  depensesValidees   Depense[]            @relation("DepenseValidateur")
+  annonces           Annonce[]            @relation("AnnonceAuteur")
+  auditLogs          AuditLog[]
+  membreProjets      ProjetMembre[]
+  widgetsConfig      WidgetConfig[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([directionId])
+  @@index([role])
+}
+
+model Direction {
+  id            String   @id @default(cuid())
+  nom           String
+  code          String   @unique
+  description   String?
+  responsableId String?  @unique
+  responsable   User?    @relation("DirectionResponsable", fields: [responsableId], references: [id])
+
+  agents     User[]     @relation("DirectionAgents")
+  documents  Document[]
+  budgets    Budget[]
+  depenses   Depense[]
+  projets    Projet[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Document {
+  id          String         @id @default(cuid())
+  titre       String
+  description String?
+  fichier     String          // path
+  fichierNom  String
+  taille      Int
+  mimeType    String
+  type        DocumentType   @default(AUTRE)
+  statut      DocumentStatut @default(SOUMIS)
+  version     Int            @default(1)
+  tags        String[]
+  contenuIndex String?       // pour recherche full-text
+
+  auteurId    String
+  auteur      User           @relation("DocumentAuteur", fields: [auteurId], references: [id])
+
+  directionId String?
+  direction   Direction?     @relation(fields: [directionId], references: [id])
+
+  projetId    String?
+  projet      Projet?        @relation(fields: [projetId], references: [id])
+
+  parentId    String?
+  parent      Document?      @relation("DocumentVersions", fields: [parentId], references: [id])
+  versions    Document[]     @relation("DocumentVersions")
+
+  validations DocumentValidation[]
+  historique  DocumentHistorique[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([auteurId])
+  @@index([directionId])
+  @@index([statut])
+  @@index([type])
+}
+
+model DocumentValidation {
+  id           String         @id @default(cuid())
+  documentId   String
+  document     Document       @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  validateurId String
+  validateur   User           @relation("DocumentValidateur", fields: [validateurId], references: [id])
+  statut       DocumentStatut
+  commentaire  String?
+  createdAt    DateTime       @default(now())
+
+  @@index([documentId])
+}
+
+model DocumentHistorique {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  action     String
+  details    Json?
+  userId     String?
+  createdAt  DateTime @default(now())
+
+  @@index([documentId])
+}
+
+model Conge {
+  id            String      @id @default(cuid())
+  agentId       String
+  agent         User        @relation("CongeAgent", fields: [agentId], references: [id])
+  dateDebut     DateTime
+  dateFin       DateTime
+  nbJours       Int
+  type          CongeType   @default(ANNUEL)
+  motif         String?
+  statut        CongeStatut @default(EN_ATTENTE)
+  commentaire   String?
+
+  approbateurId String?
+  approbateur   User?       @relation("CongeApprobateur", fields: [approbateurId], references: [id])
+  dateDecision  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([agentId])
+  @@index([statut])
+}
+
+model Presence {
+  id            String   @id @default(cuid())
+  agentId       String
+  agent         User     @relation(fields: [agentId], references: [id])
+  date          DateTime @db.Date
+  heureArrivee  DateTime?
+  heureDepart   DateTime?
+  nbHeures      Float?
+  commentaire   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([agentId, date])
+  @@index([agentId])
+  @@index([date])
+}
+
+model Evaluation {
+  id            String   @id @default(cuid())
+  agentId       String
+  agent         User     @relation("EvaluationAgent", fields: [agentId], references: [id])
+  evaluateurId  String
+  evaluateur    User     @relation("EvaluationEvaluateur", fields: [evaluateurId], references: [id])
+  annee         Int
+  note          Float
+  pointsForts   String?
+  pointsAmelioration String?
+  objectifs     String?
+  commentaire   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([agentId, annee])
+  @@index([agentId])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  expediteurId   String
+  expediteur     User     @relation("MessageExpediteur", fields: [expediteurId], references: [id])
+  destinataireId String
+  destinataire   User     @relation("MessageDestinataire", fields: [destinataireId], references: [id])
+  contenu        String
+  lu             Boolean  @default(false)
+  luAt           DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([expediteurId])
+  @@index([destinataireId])
+  @@index([lu])
+}
+
+model Annonce {
+  id        String           @id @default(cuid())
+  titre     String
+  contenu   String
+  categorie AnnonceCategorie @default(GENERALE)
+  image     String?
+  epingle   Boolean          @default(false)
+  auteurId  String
+  auteur    User             @relation("AnnonceAuteur", fields: [auteurId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categorie])
+}
+
+model Projet {
+  id            String       @id @default(cuid())
+  titre         String
+  code          String       @unique
+  description   String?
+  statut        ProjetStatut @default(PLANIFIE)
+  dateDebut     DateTime
+  dateFin       DateTime
+  budget        Float?
+  avancement    Int          @default(0)
+
+  chefProjetId  String
+  chefProjet    User         @relation("ProjetChef", fields: [chefProjetId], references: [id])
+
+  directionId   String?
+  direction     Direction?   @relation(fields: [directionId], references: [id])
+
+  taches        Tache[]
+  membres       ProjetMembre[]
+  risques       Risque[]
+  documents     Document[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([chefProjetId])
+  @@index([statut])
+}
+
+model ProjetMembre {
+  id       String @id @default(cuid())
+  projetId String
+  projet   Projet @relation(fields: [projetId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  role     String @default("membre")
+
+  createdAt DateTime @default(now())
+
+  @@unique([projetId, userId])
+}
+
+model Tache {
+  id          String      @id @default(cuid())
+  projetId    String
+  projet      Projet      @relation(fields: [projetId], references: [id], onDelete: Cascade)
+  titre       String
+  description String?
+  statut      TacheStatut @default(A_FAIRE)
+  priorite    Priorite    @default(NORMALE)
+  assigneId   String?
+  assigne     User?       @relation("TacheAssignee", fields: [assigneId], references: [id])
+  dateDebut   DateTime?
+  deadline    DateTime?
+  avancement  Int         @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projetId])
+  @@index([assigneId])
+  @@index([statut])
+}
+
+model Risque {
+  id          String   @id @default(cuid())
+  projetId    String
+  projet      Projet   @relation(fields: [projetId], references: [id], onDelete: Cascade)
+  titre       String
+  description String?
+  probabilite Int      // 1-5
+  impact      Int      // 1-5
+  mitigation  String?
+  statut      String   @default("ouvert")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projetId])
+}
+
+model Budget {
+  id              String    @id @default(cuid())
+  directionId     String
+  direction       Direction @relation(fields: [directionId], references: [id])
+  annee           Int
+  mois            Int?
+  montantAlloue   Float
+  montantConsomme Float     @default(0)
+  description     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([directionId, annee, mois])
+  @@index([directionId])
+  @@index([annee])
+}
+
+model Depense {
+  id            String         @id @default(cuid())
+  reference     String         @unique
+  libelle       String
+  description   String?
+  montant       Float
+  devise        String         @default("XAF")
+  categorie     String?
+  statut        DepenseStatut  @default(BROUILLON)
+  justificatif  String?
+
+  demandeurId   String
+  demandeur     User           @relation("DepenseDemandeur", fields: [demandeurId], references: [id])
+
+  validateurId  String?
+  validateur    User?          @relation("DepenseValidateur", fields: [validateurId], references: [id])
+  dateValidation DateTime?
+  commentaire   String?
+
+  directionId   String?
+  direction     Direction?     @relation(fields: [directionId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([demandeurId])
+  @@index([statut])
+}
+
+model Contrat {
+  id           String   @id @default(cuid())
+  reference    String   @unique
+  titre        String
+  fournisseur  String
+  montant      Float
+  devise       String   @default("XAF")
+  dateDebut    DateTime
+  dateFin      DateTime
+  statut       String   @default("actif")
+  fichier      String?
+  description  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([statut])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  titre     String
+  message   String
+  type      NotificationType @default(INFO)
+  lien      String?
+  lu        Boolean          @default(false)
+  luAt      DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([lu])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  action     String
+  entite     String
+  entiteId   String?
+  details    Json?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([entite])
+  @@index([createdAt])
+}
+
+model WidgetConfig {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  widgetKey String
+  position  Int
+  config    Json?
+  visible   Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, widgetKey])
+}
+
+model SystemSetting {
+  id    String @id @default(cuid())
+  cle   String @unique
+  valeur String
+  description String?
+  updatedAt DateTime @updatedAt
+}

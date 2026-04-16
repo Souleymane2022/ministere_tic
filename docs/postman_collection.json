@@ -1,0 +1,177 @@
+{
+  "info": {
+    "name": "Portail SHT - API",
+    "description": "Collection Postman de l'API du Portail SHT",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@sht-td.com\",\n  \"password\": \"Admin@SHT2025\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const data = pm.response.json();",
+              "if (data.accessToken) pm.collectionVariables.set('accessToken', data.accessToken);",
+              "if (data.refreshToken) pm.collectionVariables.set('refreshToken', data.refreshToken);"
+            ], "type": "text/javascript" }
+          }]
+        },
+        {
+          "name": "Refresh token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/refresh",
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}" }
+          }
+        },
+        { "name": "Me", "request": { "method": "GET", "url": "{{baseUrl}}/auth/me" } },
+        { "name": "Logout", "request": { "method": "POST", "url": "{{baseUrl}}/auth/logout" } },
+        { "name": "Setup 2FA", "request": { "method": "POST", "url": "{{baseUrl}}/auth/2fa/setup" } },
+        {
+          "name": "Verify 2FA",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/2fa/verify",
+            "body": { "mode": "raw", "raw": "{\n  \"token\": \"123456\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Utilisateurs",
+      "item": [
+        { "name": "Liste", "request": { "method": "GET", "url": "{{baseUrl}}/users" } },
+        { "name": "Détail", "request": { "method": "GET", "url": "{{baseUrl}}/users/:id" } },
+        {
+          "name": "Créer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/users",
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"nouveau@sht-td.com\",\n  \"password\": \"MotDePasse123\",\n  \"nom\": \"DUPONT\",\n  \"prenom\": \"Jean\",\n  \"role\": \"AGENT\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Documents (GED)",
+      "item": [
+        { "name": "Liste", "request": { "method": "GET", "url": "{{baseUrl}}/documents?search=&statut=" } },
+        { "name": "Détail", "request": { "method": "GET", "url": "{{baseUrl}}/documents/:id" } },
+        {
+          "name": "Upload",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/documents",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "fichier", "type": "file" },
+                { "key": "titre", "value": "Rapport mensuel", "type": "text" },
+                { "key": "tags", "value": "rapport,mensuel", "type": "text" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Valider",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/documents/:id/validate",
+            "body": { "mode": "raw", "raw": "{\n  \"statut\": \"APPROUVE\",\n  \"commentaire\": \"OK\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RH",
+      "item": [
+        { "name": "Liste des congés", "request": { "method": "GET", "url": "{{baseUrl}}/rh/conges" } },
+        {
+          "name": "Demander un congé",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/rh/conges",
+            "body": { "mode": "raw", "raw": "{\n  \"dateDebut\": \"2025-08-01\",\n  \"dateFin\": \"2025-08-15\",\n  \"type\": \"ANNUEL\",\n  \"motif\": \"Vacances\"\n}" }
+          }
+        },
+        { "name": "Pointer arrivée", "request": { "method": "POST", "url": "{{baseUrl}}/rh/presences/pointage-arrivee" } },
+        { "name": "Pointer départ", "request": { "method": "POST", "url": "{{baseUrl}}/rh/presences/pointage-depart" } }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        { "name": "Stats", "request": { "method": "GET", "url": "{{baseUrl}}/dashboard/stats" } },
+        { "name": "Export PDF", "request": { "method": "GET", "url": "{{baseUrl}}/dashboard/export/pdf" } }
+      ]
+    },
+    {
+      "name": "Finance",
+      "item": [
+        { "name": "Budgets", "request": { "method": "GET", "url": "{{baseUrl}}/finance/budgets" } },
+        { "name": "Dépenses", "request": { "method": "GET", "url": "{{baseUrl}}/finance/depenses" } },
+        {
+          "name": "Nouvelle dépense",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/finance/depenses",
+            "body": { "mode": "raw", "raw": "{\n  \"libelle\": \"Mission terrain\",\n  \"montant\": 500000,\n  \"categorie\": \"Mission\"\n}" }
+          }
+        },
+        { "name": "Contrats", "request": { "method": "GET", "url": "{{baseUrl}}/finance/contrats" } }
+      ]
+    },
+    {
+      "name": "Communication",
+      "item": [
+        { "name": "Annonces", "request": { "method": "GET", "url": "{{baseUrl}}/communication/annonces" } },
+        { "name": "Conversations", "request": { "method": "GET", "url": "{{baseUrl}}/communication/messages/conversations" } },
+        { "name": "Notifications", "request": { "method": "GET", "url": "{{baseUrl}}/communication/notifications" } }
+      ]
+    },
+    {
+      "name": "Projets",
+      "item": [
+        { "name": "Liste", "request": { "method": "GET", "url": "{{baseUrl}}/projets" } },
+        { "name": "Détail", "request": { "method": "GET", "url": "{{baseUrl}}/projets/:id" } },
+        { "name": "Gantt", "request": { "method": "GET", "url": "{{baseUrl}}/projets/:id/gantt" } }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        { "name": "Stats", "request": { "method": "GET", "url": "{{baseUrl}}/admin/stats" } },
+        { "name": "Audit", "request": { "method": "GET", "url": "{{baseUrl}}/admin/audit?page=1&pageSize=50" } },
+        { "name": "Settings", "request": { "method": "GET", "url": "{{baseUrl}}/admin/settings" } },
+        { "name": "Permissions", "request": { "method": "GET", "url": "{{baseUrl}}/admin/permissions" } }
+      ]
+    }
+  ]
+}
