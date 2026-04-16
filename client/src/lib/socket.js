@@ -8,7 +8,8 @@ export function getSocket() {
   if (!token) return null;
 
   if (!socket) {
-    socket = io({
+    const socketUrl = import.meta.env.VITE_API_URL || '/';
+    socket = io(socketUrl, {
       auth: { token },
       autoConnect: true,
       transports: ['websocket', 'polling'],
